@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser);
 
 // MongoDB connection 
-mongoose.connect('mongodb+srv://server:zXRtmsHiWaL0zTwes@cluster0.cqrdhgf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',  { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
+mongoose.connect('mongodb+srv://server:zXRtmsHiWaL0zTwe@cluster0.cqrdhgf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => console.log('MongoDB connected')).catch(err => console.log(err));
 
 // User model
 const user = mongoose.model('User', new mongoose.Schema({
