@@ -1,12 +1,13 @@
-const { generateWorkoutAdvice } = require('./services/openaiService'); 
+const { generateWorkoutPlan } = require('./path/to/openaiService');
 
-exports.getAdvice = async (req, res) => {
-  const { question } = req.body;
+// Example usage within an Express route
+app.post('/api/generate-workout-plan', async (req, res) => {
   try {
-    const advice = await generateWorkoutAdvice(question);
-    res.json({ advice });
+    const userData = req.body; // Assuming this contains fitnessGoals, fitnessLevel, preferences
+    const structuredWorkoutPlan = await generateWorkoutPlan(userData);
+    res.json(structuredWorkoutPlan);
   } catch (error) {
-    console.error("Error in getting workout advice:", error);
-    res.status(500).send("Error getting workout advice.");
+    console.error("Failed to generate workout plan:", error);
+    res.status(500).send("Failed to generate workout plan.");
   }
-};
+});

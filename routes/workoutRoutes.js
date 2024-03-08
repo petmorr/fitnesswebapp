@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const workoutController = require('../controllers/workoutController');
 
-router.post('/get-advice', workoutController.getAdvice);
+// Route to create a new workout plan
+router.post('/workout-plans', workoutController.createWorkoutPlan);
 
 module.exports = router;
