@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser);
 
-// MongoDB connection -- LEAVE THIS TO ME (PETER)
-//mongoose.connect('connection-string',  { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
+// MongoDB connection 
+mongoose.connect('mongodb+srv://server:zXRtmsHiWaL0zTwes@cluster0.cqrdhgf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',  { useNewUrlParser: true, useUnifiedTopology: true}).then(() => console.log('MongoDB connected')).catch(err => console.log(err));
 
 // User model
 const user = mongoose.model('User', new mongoose.Schema({
@@ -38,7 +38,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Login
 // Login
 app.post('/login', async (req, res) => {
     try {
