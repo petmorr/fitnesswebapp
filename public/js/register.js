@@ -1,33 +1,20 @@
-document.getElementById('registerForm').addEventListener('submit', async (event) => {
+document.getElementById('registerForm').addEventListener('submit', function(event) {
   event.preventDefault();
-  const email = this.querySelector('input[type="email"]').value;
-  const password = this.querySelectorAll('input[type="password"]')[0].value;
-  const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
-  const role = document.getElementById('registerForm').querySelector('select[name="role"]').value;
-  
-  if (!email || !password || !confirmPassword) {
-    alert('Please fill in all fields.');
-    return;
-  }
-  
-  if (password !== confirmPassword) {
-    alert('Passwords do not match.');
-    return;
-  }
-  
-  try {
-    const response = await fetch('http://localhost:3000/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, role })
-    });
-    
-    if (response.ok) {
-      alert('Registration successful');
+  const formData = new FormData(this);
+  fetch('/api/users/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.fromEntries(formData)),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.token) {
+      // Registration successful, redirect or inform the user
+      console.log('Registration successful');
     } else {
-      alert('Registration failed');
+      // Handle errors
+      console.error('Registration failed', data.error);
     }
-  } catch (error) {
-    alert('Error communicating with the server');
-  }
+  })
+  .catch(error => console.error('Error:', error));
 });

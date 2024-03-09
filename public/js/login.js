@@ -1,22 +1,20 @@
-document.getElementById('loginForm').addEventListener('submit', async (event) => {
+document.getElementById('loginForm').addEventListener('submit', function(event) {
   event.preventDefault();
-  const email = this.querySelector('input[type="email"]').value;
-  const password = this.querySelector('input[type="password"]').value;
-  const role = this.querySelector('select[name="role"]').value;
-  
-  try {
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    if (response.ok) {
-      alert('Login successful');
+  const formData = new FormData(this);
+  fetch('/api/users/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.fromEntries(formData)),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.token) {
+      // Login successful, redirect or inform the user
+      console.log('Login successful');
     } else {
-      alert('Invalid credentials');
+      // Handle errors
+      console.error('Login failed', data.error);
     }
-  } catch (error) {
-    alert('Error communicating with the server');
-  }
+  })
+  .catch(error => console.error('Error:', error));
 });
