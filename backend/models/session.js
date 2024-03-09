@@ -1,11 +1,31 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const sessionSchema = new Schema({
-  trainer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  time: { type: Date, required: true },
-  status: { type: String, default: 'pending' }, // e.g., pending, confirmed, completed
-});
+const sessionSchema = new mongoose.Schema({
+  trainer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  time: {
+    type: Date,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
+    default: 'pending'
+  },
+  description: {
+    type: String,
+    default: ''
+  }
+}, { timestamps: true });
 
-module.exports = mongoose.model('Session', sessionSchema);
+const Session = mongoose.model('Session', sessionSchema);
+
+module.exports = Session;

@@ -8,11 +8,9 @@ exports.bookSession = async (req, res) => {
       user: userId,
       time
     });
+
     await session.validate(); // Validate input
-
     await session.save(); // Save the session
-
-    res.status(201).json({ msg: 'Session booked successfully', session });
     res.status(201).json({ msg: 'Session booked successfully', session });
   } catch (err) {
     console.error(err.message);

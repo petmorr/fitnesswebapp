@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const sessionController = require('../controllers/sessionController');
-const express = require('express');
-const sessionController = require('../controllers/sessionController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const validateBooking = require('../middlewares/validateBooking');
 

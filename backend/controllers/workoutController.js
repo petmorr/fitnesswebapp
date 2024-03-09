@@ -1,24 +1,37 @@
-const { generateWorkoutPlan } = require('./path/to/openaiService');
+const WorkoutPlan = require('../models/workoutPlan'); // Ensure you have a WorkoutPlan model
 
-// Example usage within an Express route
-app.post('/api/generate-workout-plan', async (req, res) => {
+exports.createWorkoutPlan = async (req, res) => {
+  const { userId, exercises } = req.body;
+  
   try {
-    const userData = req.body; 
-    // Validate user data
-    if (!userData || typeof userData !== 'object') {
-      throw new Error('Invalid user data');
-    }
-    if (!userData.fitnessGoals || !userData.fitnessLevel || !userData.preferences) {
-      throw new Error('Missing required user data');
-    }
-
-    // Generate workout plan
-    const structuredWorkoutPlan = await generateWorkoutPlan(userData);
-
-    res.json(structuredWorkoutPlan);
-    res.json(structuredWorkoutPlan);
-  } catch (error) {
-    console.error("Failed to generate workout plan:", error);
-    res.status(500).send("Failed to generate workout plan.");
+    const newWorkoutPlan = new WorkoutPlan({
+      userId,
+      exercises
+    });
+    
+    await newWorkoutPlan.save();
+    res.json(newWorkoutPlan);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
   }
-});
+};
+
+exports.updateWorkoutPlan = async (req, res) => {
+  const { exercises } = req.body; // Assuming exercises is what you'd want to update
+  
+  try {
+    const workoutPlan = await WorkoutPlan.findById(req.params.id);
+    if (!workoutPlan) {
+      return res.status(404).json({ msg: 'Workout Plan not found' });
+    }
+
+    // Update the exercises field
+    workoutPlan.exercises = exercises;
+    await workoutPlan.save();
+    res.json(workoutPlan);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};

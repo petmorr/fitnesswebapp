@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 // Subdocument schema for user's progress metrics
@@ -30,10 +31,13 @@ const MotivationalContentSchema = new Schema({
   quotes: [String], // Array of motivational quotes
 }, { _id: false });
 
+// Email regex for validation
+const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 // Main User schema
 const UserSchema = new Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true, match: emailRegex },
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'personalTrainer', 'admin'], default: 'user' },
   fitnessGoals: { 
@@ -54,6 +58,20 @@ const UserSchema = new Schema({
     weakness: String,
     notes: String,
   }],
+}, { timestamps: true });
+
+// Pre-save hook for password hashing
+UserSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
 });
+
+// Method to exclude sensitive data from the response
+UserSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
 module.exports = mongoose.model('User', UserSchema);

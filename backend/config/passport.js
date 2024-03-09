@@ -1,28 +1,32 @@
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
+const User = require('../models/user');
+
+if (!process.env.OAUTH_CLIENT_ID || !process.env.OAUTH_CLIENT_SECRET) {
+  throw new Error('OAuth environment variables are not set.');
+}
 
 passport.use(new OAuth2Strategy({
-    authorizationURL: 'https://provider.example.com/oauth2/authorize',
-    tokenURL: 'https://provider.example.com/oauth2/token',
-    clientID: process.env.OAUTH_CLIENT_ID,
-    clientSecret: process.env.OAUTH_CLIENT_SECRET,
-    callbackURL: 'https://yourdomain.com/auth/provider/callback'
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    // In this function, find or create a user in your database and call cb with the user object.
-    User.findOrCreate({ exampleId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-  }
-));
+  authorizationURL: process.env.OAUTH_AUTHORIZATION_URL,
+  tokenURL: process.env.OAUTH_TOKEN_URL,
+  clientID: process.env.OAUTH_CLIENT_ID,
+  clientSecret: process.env.OAUTH_CLIENT_SECRET,
+  callbackURL: process.env.OAUTH_CALLBACK_URL
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ exampleId: profile.id }, function (err, user) {
+    if (err) { console.error('Error during User findOrCreate', err); }
+    return cb(err, user);
+  });
+}));
 
-// Serialize and deserialize user instances to and from the session.
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
+    if (err) { console.error('Error during User findById', err); }
     done(err, user);
   });
 });
