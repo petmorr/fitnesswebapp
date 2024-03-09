@@ -1,4 +1,4 @@
-document.getElementById('registerForm').addEventListener('submit', async function(event) {
+document.getElementById('registerForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const email = this.querySelector('input[type="email"]').value;
   const password = this.querySelectorAll('input[type="password"]')[0].value;

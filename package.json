@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.4.0",
     "mongoose": "^8.2.1",
+    "node-fetch": "^3.3.2",
     "openai": "^4.28.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0"
