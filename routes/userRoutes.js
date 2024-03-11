@@ -16,7 +16,14 @@ router.get('/login', renderLoginPage); // Render the login page
 router.post('/login', login); // Handle form submission
 
 // Route to render the dashboard
-router.get('/dashboard', authMiddleware, (req, res) => res.render('dashboard')); 
+router.get('/dashboard', authMiddleware, (req, res) => {
+    try {
+        res.render('dashboard', { title: 'Dashboard' });
+    } catch (error) {
+        console.error("Dashboard error:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 // Error handling routes
 router.use(function(req, res) {
