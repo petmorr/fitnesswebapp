@@ -14,6 +14,7 @@ router.get('/registerSuccess', (req, res) => res.render('registerSuccess', { tit
 // Routes for login
 router.get('/login', renderLoginPage); // Render the login page
 router.post('/login', login); // Handle form submission
+router.get('/loginSuccess', (req, res) => res.render('loginSuccess', { title: 'Login Successful' }));
 
 // Route to render the dashboard
 router.get('/dashboard', authMiddleware, (req, res) => {
