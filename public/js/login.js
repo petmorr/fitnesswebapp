@@ -1,7 +1,7 @@
 document.getElementById('loginForm').addEventListener('submit', function(event) {
   event.preventDefault();
   const formData = new FormData(this);
-  fetch('/api/users/login', {
+  fetch('/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(Object.fromEntries(formData)),
@@ -9,12 +9,16 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
   .then(response => response.json())
   .then(data => {
     if (data.token) {
-      // Login successful, redirect or inform the user
-      console.log('Login successful');
+      localStorage.setItem('token', data.token); // Store the token
+      window.location.href = '/dashboard'; // Redirect to the dashboard
     } else {
-      // Handle errors
-      console.error('Login failed', data.error);
+      // Handle errors, update UI accordingly
+      const errorElement = document.getElementById('errorMessage');
+      errorElement.textContent = data.error;
     }
   })
-  .catch(error => console.error('Error:', error));
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById('errorMessage').textContent = error.message; // Display error
+  });
 });

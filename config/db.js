@@ -3,10 +3,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async (retryCount = 5) => {
   try {
-    await mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
     console.log('MongoDB connected');
   } catch (err) {
     console.error(err.message);
