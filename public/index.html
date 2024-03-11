@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitnessPal - Your Ultimate Fitness Companion</title>
+<style>
+  body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
+  .container { max-width: 1200px; margin: auto; padding: 20px; }
+  header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+  nav ul { list-style: none; padding: 0; }
+  nav ul li { display: inline; margin-right: 20px; }
+  nav ul li a { text-decoration: none; color: #333; }
+  .hero { text-align: center; padding: 100px 20px; }
+  .hero h1 { font-size: 2.5em; margin-bottom: 20px; }
+  .hero p { font-size: 1.2em; margin-bottom: 40px; }
+  .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+  .button:hover { background-color: #0056b3; }
+  footer { background-color: #f8f9fa; text-align: center; padding: 20px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h2>FitnessPal</h2>
+    <nav>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="/login.html">Login</a></li>
+        <li><a href="/register.html" class="button">Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Welcome to FitnessPal</h1>
+      <p>Your Ultimate Fitness Companion.</p>
+      <a href="/register.html" class="button">Get Started</a>
+    </section>
+    <!-- You can add more sections here for "Features", "About", etc. -->
+  </main>
+  <footer>
+    <p>&copy; 2024 FitnessPal. All rights reserved.</p>
+  </footer>
+</div>
+<script>
+  // Implement any JavaScript interactions here. For example:
+  document.querySelector('.button').addEventListener('click', () => {
+    // Placeholder for actions to be taken when the "Get Started" button is clicked.
+    console.log('Navigate to registration or perform a dynamic action.');
+  });
+</script>
+</body>
+</html>

@@ -1,5 +1,10 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+
+exports.landingPage = async (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+}
 
 exports.register = async (req, res) => {
   try {
