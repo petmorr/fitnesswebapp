@@ -36,8 +36,6 @@ exports.register = async (req, res) => {
       password: password,
     });
 
-    password = user.pre(password);
-
     await user.save();
 
     // Generate a JWT token
@@ -49,6 +47,10 @@ exports.register = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.renderRegisterSuccess = async (req, res) => {
+  res.render('registerSuccess', { title: 'Registration Success' });
+}
 
 exports.renderLoginPage = async (req, res) => {
   res.render('login', { title: 'Login to FitnessPal' });
@@ -84,6 +86,10 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.renderLoginSuccess = async (req, res) => {
+  res.render('loginSuccess', { title: 'Login Success' });
+}
 
 exports.renderDashboardPage = async (req, res) => {
   res.render('dashboard', { title: 'Dashboard' });
