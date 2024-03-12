@@ -57,9 +57,9 @@ exports.renderLoginPage = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     // Validate email and password
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required.' });
@@ -72,7 +72,8 @@ exports.login = async (req, res) => {
     }
 
     // Compare the submitted password with the hashed password in the database
-    const isMatch = user.comparePassword(password);
+    const isMatch = await user.comparePassword(password);
+    console.log('Password match:', isMatch);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid login credentials.' });
     }
@@ -80,7 +81,7 @@ exports.login = async (req, res) => {
     // Generate a JWT token
     const token = generateToken(user._id);
 
-    res.status(201).json({ message: 'Login successful', token });
+    res.json({ message: 'Login successful', token });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -92,5 +93,11 @@ exports.renderLoginSuccess = async (req, res) => {
 }
 
 exports.renderDashboardPage = async (req, res) => {
-  res.render('dashboard', { title: 'Dashboard' });
+  try {
+    
+    res.render('dashboard', { title: 'Dashboard' }); 
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
