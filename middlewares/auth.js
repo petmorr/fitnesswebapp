@@ -14,8 +14,6 @@ const authMiddleware = (req, res, next) => {
         req.user = decoded; // Add decoded user payload to request object
         next();
     } catch (error) {
-        console.error("Middleware error:", error);
-        res.status(400).json({ error: 'Invalid token.' });
         res.status(500).json({ error: 'Internal Server Error in Middleware' });
     }
     return next();

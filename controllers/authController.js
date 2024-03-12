@@ -73,7 +73,6 @@ exports.login = async (req, res) => {
 
     // Compare the submitted password with the hashed password in the database
     const isMatch = await user.comparePassword(password);
-    console.log('Password match:', isMatch);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid login credentials.' });
     }
