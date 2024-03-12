@@ -8,15 +8,13 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ error: 'Access denied. No token provided.' });
     }
 
-    try {
-        // Verify the token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Add decoded user payload to request object
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid token' }); // Token is not valid
+        }
+        req.user = user;
         next();
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error in Middleware' });
-    }
-    return next();
+    });
 };
 
 module.exports = authMiddleware;

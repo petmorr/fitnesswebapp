@@ -10,7 +10,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
   .then(data => {
     if (data.token) {
       localStorage.setItem('token', data.token); // Store the token
-      window.location.href = '/registerSuccess'; // Redirect to the registration success page
+      window.location.href = '/login'; // Redirect to the registration success page
     } else {
       // Handle errors, update UI accordingly
       const errorElement = document.getElementById('errorMessage');

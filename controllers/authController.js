@@ -12,7 +12,7 @@ exports.renderRegisterPage = async (req, res) => {
 
 // Helper function to generate JWT
 const generateToken = async (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
 };
 
 exports.register = async (req, res) => {
@@ -47,10 +47,6 @@ exports.register = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-exports.renderRegisterSuccess = async (req, res) => {
-  res.render('registerSuccess', { title: 'Registration Success' });
-}
 
 exports.renderLoginPage = async (req, res) => {
   res.render('login', { title: 'Login to FitnessPal' });
@@ -87,19 +83,11 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.renderLoginSuccess = async (req, res) => {
-  res.render('loginSuccess', { title: 'Login Success' });
-}
-
 exports.renderDashboardPage = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    res.render('dashboard', { title: 'Dashboard' }); 
+    res.render('dashboard', { title: 'Dashboard' });
   } catch (error) {
-    console.error("Dashboard error:", error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Dashboard rendering error:", error);
+    res.status(500).send('Internal Server Error');
   }
 };
