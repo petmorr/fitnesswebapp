@@ -2,16 +2,16 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.renderLandingPage = async (req, res) => {
+exports.renderLandingPage = (req, res) => {
   res.render('landing', { title: 'Welcome to FitnessPal' });
 };
 
-exports.renderRegisterPage = async (req, res) => {
+exports.renderRegisterPage = (req, res) => {
   res.render('register', { title: 'Register for FitnessPal' });
 };
 
 // Helper function to generate JWT
-const generateToken = async (userId) => {
+const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
 };
 
@@ -48,7 +48,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.renderLoginPage = async (req, res) => {
+exports.renderLoginPage = (req, res) => {
   res.render('login', { title: 'Login to FitnessPal' });
 };
 
@@ -83,7 +83,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.renderDashboardPage = async (req, res) => {
+exports.renderDashboardPage = (req, res) => {
   try {
     res.render('dashboard', { title: 'Dashboard' });
   } catch (error) {

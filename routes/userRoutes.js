@@ -1,7 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const router = express.Router();
 const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage } = require('../controllers/authController');
-const authMiddleware = require('../middlewares/auth');
+const corsConfig = require('../config/cors');
+
+router.use(cors());
 
 // Route to render the landing page
 router.get('/', renderLandingPage);
@@ -15,7 +18,7 @@ router.get('/login', renderLoginPage); // Render the login page
 router.post('/login', login); // Handle form submission
 
 // Route to render the dashboard
-router.get('/dashboard', /*authMiddleware,*/ renderDashboardPage);
+router.get('/dashboard', corsConfig, renderDashboardPage);
 
 // Error handling routes
 router.use(function(req, res) {
