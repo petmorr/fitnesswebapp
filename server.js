@@ -1,9 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const mustacheExpress = require('mustache-express');
-const path = require('path');
-const cors = require('cors');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -16,10 +12,12 @@ const connectDB = require('./config/db');
 connectDB();
 
 // Serving static files
+const path = require('path');
 const publicDirectoryPath = path.join(__dirname, 'public');
 app.use(express.static(publicDirectoryPath));
 
 // Setting up Mustache as the view engine
+const mustacheExpress = require('mustache-express');
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
