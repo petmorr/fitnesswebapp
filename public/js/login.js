@@ -1,24 +1,24 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
   event.preventDefault();
   const formData = new FormData(this);
-  fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(Object.fromEntries(formData)),
-  })
-  .then(response => response.json())
-  .then(data => {
+
+  try {
+    const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData))
+    });
+
+    const data = await response.json();
     if (data.token) {
-      localStorage.setItem('token', data.token); // Store the token
-      window.location.href = '/dashboard'; // Redirect to the login success page
+        // Store the token and redirect to the dashboard
+        localStorage.setItem('token', data.token);
+        window.location.href = '/dashboard'; 
     } else {
-      // Handle errors, update UI accordingly
-      const errorElement = document.getElementById('errorMessage');
-      errorElement.textContent = data.error;
+        // Handle login failure
+        console.error(data.error);
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('errorMessage').textContent = error.message; // Display error
-  });
+} catch (error) {
+    console.error('Login request failed', error);
+}
 });

@@ -1,7 +1,7 @@
 document.getElementById('registerForm').addEventListener('submit', function(event) {
   event.preventDefault();
   const formData = new FormData(this);
-  fetch('/register', {
+  fetch('/api/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(Object.fromEntries(formData)),

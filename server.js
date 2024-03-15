@@ -3,9 +3,8 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS Configuration
-const corsConfig = require('./config/cors');
-app.use(corsConfig);
+// Parse JSON bodies
+app.use(express.json());
 
 // MongoDB Connection
 const connectDB = require('./config/db');
@@ -22,12 +21,12 @@ app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
 
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
-
 // User routes
 const userRoutes = require('./routes/userRoutes');
 app.use('/', userRoutes);
+
+// Route Middlewares
+app.use('/api/user', require('./routes/userRoutes'));
 
 // Start the server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

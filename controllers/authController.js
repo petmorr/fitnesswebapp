@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.renderLandingPage = (req, res) => {
@@ -12,7 +11,7 @@ exports.renderRegisterPage = (req, res) => {
 
 // Helper function to generate JWT
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 exports.register = async (req, res) => {
@@ -76,10 +75,10 @@ exports.login = async (req, res) => {
     // Generate a JWT token
     const token = generateToken(user._id);
 
-    res.json({ message: 'Login successful', token });
+    // Return the token in the response
+    res.status(200).json({ message: 'Login successful', token: token });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(401).json({ error: 'Invalid login' });
   }
 };
 
@@ -90,4 +89,9 @@ exports.renderDashboardPage = (req, res) => {
     console.error("Dashboard rendering error:", error);
     res.status(500).send('Internal Server Error');
   }
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/');
 };

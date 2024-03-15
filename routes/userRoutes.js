@@ -1,24 +1,20 @@
 const express = require('express');
-const cors = require('cors');
 const router = express.Router();
 const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage } = require('../controllers/authController');
-const corsConfig = require('../config/cors');
-
-router.use(cors());
 
 // Route to render the landing page
 router.get('/', renderLandingPage);
 
 // Routes for registration
 router.get('/register', renderRegisterPage); // Render the registration page
-router.post('/register', register); // Handle form submission
+router.post('/api/register', register); // Handle form submission
 
 // Routes for login
 router.get('/login', renderLoginPage); // Render the login page
-router.post('/login', login); // Handle form submission
+router.post('/api/login', login); // Handle form submission
 
 // Route to render the dashboard
-router.get('/dashboard', corsConfig, renderDashboardPage);
+router.get('/dashboard', renderDashboardPage);
 
 // Error handling routes
 router.use(function(req, res) {
