@@ -10,7 +10,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
   .then(data => {
     if (data.token) {
       localStorage.setItem('token', data.token); // Store the token
-      window.location.href = '/dashboard'; // Redirect to the dashboard
+      window.location.href = '/dashboard'; // Redirect to the login success page
     } else {
       // Handle errors, update UI accordingly
       const errorElement = document.getElementById('errorMessage');
