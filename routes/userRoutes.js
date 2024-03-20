@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage } = require('../controllers/authController');
+const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage, logout } = require('../controllers/authController');
 
 // Route to render the landing page
 router.get('/', renderLandingPage);
@@ -13,15 +13,10 @@ router.post('/api/register', register); // Handle form submission
 router.get('/login', renderLoginPage); // Render the login page
 router.post('/api/login', login); // Handle form submission
 
+// Route to logout
+router.get('/logout', logout);
+
 // Route to render the dashboard
 router.get('/dashboard', renderDashboardPage);
-
-// Error handling routes
-router.use(function(req, res) {
-    res.status(404).type('text/plain').send('404 Not found.');
-});
-router.use(function(err, req, res, next) {
-    res.status(500).type('text/plain').send('Internal Server Error.');
-});
 
 module.exports = router;

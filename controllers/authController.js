@@ -16,34 +16,24 @@ const generateToken = (userId) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+      const { email, password } = req.body;
+      if (!email || !password) {
+          return res.status(400).json({ message: 'Email and password are required' });
+      }
 
-    // Validate email and password
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required.' });
-    }
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ message: 'User already exists' });
+      }
 
-    // Check if the user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists with this email.' });
-    }
+      const user = new User({ email, password: password });
+      await user.save();
 
-    // Create a new user
-    const user = new User({
-      email,
-      password: password,
-    });
-
-    await user.save();
-
-    // Generate a JWT token
-    const token = generateToken(user._id);
-
-    res.status(201).json({ message: 'User registered successfully', token });
+      const token = generateToken(user._id);
+      res.status(201).json({ token });
   } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -52,33 +42,18 @@ exports.renderLoginPage = (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    // Validate email and password
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required.' });
-    }
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
+      if (!user || !(await user.comparePassword(password, user.password))) {
+          return res.status(401).json({ message: 'Invalid email or password' });
+      }
 
-    // Find the user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ error: 'Cannot find user, please re-enter a valid email has an account already.' });
-    }
-
-    // Compare the submitted password with the hashed password in the database
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid login credentials.' });
-    }
-
-    // Generate a JWT token
-    const token = generateToken(user._id);
-
-    // Return the token in the response
-    res.status(200).json({ message: 'Login successful', token: token });
+      const token = generateToken(user._id);
+      res.json({ token });
   } catch (error) {
-    res.status(401).json({ error: 'Invalid login' });
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -93,5 +68,5 @@ exports.renderDashboardPage = (req, res) => {
 
 exports.logout = (req, res) => {
   res.clearCookie('token');
-  res.redirect('/');
+  res.redirect('/login');
 };

@@ -25,8 +25,5 @@ app.set('views', __dirname + '/views');
 const userRoutes = require('./routes/userRoutes');
 app.use('/', userRoutes);
 
-// Route Middlewares
-app.use('/api/user', require('./routes/userRoutes'));
-
 // Start the server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
