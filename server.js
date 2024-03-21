@@ -1,33 +1,55 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
+const cors = require('cors');
+const MongoStore = require('connect-mongo');
+const connectDB = require('./config/db');
+const path = require('path');
+const publicDirectoryPath = path.join(__dirname, 'public');
+const mustacheExpress = require('mustache-express');
+const userRoutes = require('./routes/userRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS Configuration
-const corsConfig = require('./config/cors');
-app.use(corsConfig);
+(async () => {
+  try {
+    const mongoose = await connectDB();
+    console.log('Database connected, starting server...');
 
-// MongoDB Connection
-const connectDB = require('./config/db');
-connectDB();
+    app.use(cors());
 
-// Serving static files
-const path = require('path');
-const publicDirectoryPath = path.join(__dirname, 'public');
-app.use(express.static(publicDirectoryPath));
+    // Parse JSON bodies
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
-// Setting up Mustache as the view engine
-const mustacheExpress = require('mustache-express');
-app.engine('mustache', mustacheExpress());
-app.set('view engine', 'mustache');
-app.set('views', __dirname + '/views');
+    app.use(session({
+      secret: process.env.JWT_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI,
+      }),
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      }
+    }));
 
-// Parse JSON bodies (as sent by API clients)
-app.use(express.json());
+    // Serving static files
+    app.use(express.static(publicDirectoryPath));
 
-// User routes
-const userRoutes = require('./routes/userRoutes');
-app.use('/', userRoutes);
+    // Setting up Mustache as the view engine
+    app.engine('mustache', mustacheExpress());
+    app.set('view engine', 'mustache');
+    app.set('views', __dirname + '/views');
 
-// Start the server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // User routes
+    app.use('/', userRoutes);
+
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  } catch (error) {
+    console.error('Failed to connect to the database:', error);
+  }
+})();
