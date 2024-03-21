@@ -2,8 +2,44 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/\S+@\S+\.\S+/, 'Please enter a valid email address.']
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  age: {
+    type: Number,
+    required: true,
+    min: [16, 'Minimum age is 16'],
+    max: [100, 'Maximum age is 100']
+  },
+  weight: {
+    type: Number,
+    required: true,
+    min: [20, 'Minimum weight is 20 kg'],
+    max: [635, 'Maximum weight is 635 kg']
+  },
+  height: {
+    type: Number,
+    required: true,
+    min: [91.44, 'Minimum height is 91.44 cm'], // 3 feet in cm
+    max: [272, 'Maximum height is 272 cm'] // 9 feet in cm
+  },
+  fitnessLevel: {
+    type: String,
+    enum: ['beginner', 'intermediate', 'advanced'],
+    default: 'beginner'
+  },
+  fitnessGoals: [{
+    type: String,
+    required: true,
+    enum: ['loseWeight', 'buildMuscle', 'feelFitter', 'improveFlexibility', 'increaseStamina']
+  }]
 });
 
 // Hash password before saving
