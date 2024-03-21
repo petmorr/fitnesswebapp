@@ -3,8 +3,16 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Parse JSON bodies
+// CORS and Cookie Parser Config
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // MongoDB Connection
 const connectDB = require('./config/db');

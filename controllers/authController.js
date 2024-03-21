@@ -9,11 +9,6 @@ exports.renderRegisterPage = (req, res) => {
   res.render('register', { title: 'Register for FitnessPal' });
 };
 
-// Helper function to generate JWT
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-};
-
 exports.register = async (req, res) => {
   try {
       const { email, password } = req.body;
@@ -28,9 +23,6 @@ exports.register = async (req, res) => {
 
       const user = new User({ email, password: password });
       await user.save();
-
-      const token = generateToken(user._id);
-      res.status(201).json({ token });
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
@@ -42,18 +34,32 @@ exports.renderLoginPage = (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-      const { email, password } = req.body;
-      const user = await User.findOne({ email });
-      if (!user || !(await user.comparePassword(password, user.password))) {
-          return res.status(401).json({ message: 'Invalid email or password' });
+      // Validate email and password
+      if (!email || !password) {
+        return res.render('login', { title: 'Login to FitnessPal', errorMessage: 'Email and password are required.' })
       }
 
-      const token = generateToken(user._id);
-      res.json({ token });
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.render('login', { title: 'Login to FitnessPal', errorMessage: 'Invalid email.' });
+      }
+
+      // Compare the submitted password with the hashed password in the database
+      const isMatch = await user.comparePassword(password);
+      if (!isMatch) {
+        return res.render('login', { title: 'Login to FitnessPal', errorMessage: 'Invalid password,' });
+      }
+
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'Strict', secure: true });
+      return res.redirect('/dashboard');
   } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).render('login', { title: 'Login to FitnessPal', errorMessage: 'Internal server error' });
   }
 };
 
