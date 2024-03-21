@@ -15,7 +15,7 @@ router.get('/login', renderLoginPage); // Render the login page
 router.post('/api/login', login); // Handle form submission
 
 // Route to logout
-router.post('/api/logout', logout);
+router.get('/logout', logout);
 
 // Route to render the dashboard
 router.get('/dashboard', authenticateToken, renderDashboardPage);

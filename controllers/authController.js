@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const jwt = require('jsonwebtoken');
 
 exports.renderLandingPage = (req, res) => {
   res.render('landing', { title: 'Welcome to FitnessPal' });
@@ -50,13 +49,13 @@ exports.login = async (req, res) => {
 
       // Compare the submitted password with the hashed password in the database
       const isMatch = await user.comparePassword(password);
-      if (!isMatch) {
+      if (isMatch) {
+        req.session.userId = user._id;
+        req.session.isAuthenticated = true;
+        return res.redirect('/dashboard')
+      } else {
         return res.render('login', { title: 'Login to FitnessPal', errorMessage: 'Invalid password,' });
       }
-
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.cookie('token', token, { httpOnly: true, sameSite: 'Strict', secure: true });
-      return res.redirect('/dashboard');
   } catch (error) {
       console.error(error);
       return res.status(500).render('login', { title: 'Login to FitnessPal', errorMessage: 'Internal server error' });
@@ -73,6 +72,8 @@ exports.renderDashboardPage = (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  res.clearCookie('token');
-  res.redirect('/login');
+  req.session.destroy(() => {
+      res.clearCookie('connect.sid', { path: '/' }); // Adjust the cookie name if needed
+      res.redirect('/login');
+  });
 };
