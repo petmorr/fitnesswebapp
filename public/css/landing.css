@@ -1,0 +1,112 @@
+/* Landing page specific styles */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.nav {
+    float: right;
+}
+
+.nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.hero {
+    padding: 100px 0;
+    text-align: center;
+    background-size: cover;
+    color: #fff;
+    animation: rotateImages 20s infinite; /* Animation to rotate images every 20 seconds */
+}
+
+.free-section {
+    background-image: url('../images/pexels-the-lazy-artist-gallery-2247179.jpg'); /* Background image path */
+    background-size: cover;
+    padding: 100px 0;
+    text-align: center;
+    color: #fff;
+}
+
+@keyframes rotateImages {
+    0% {
+        background-image: url('../images/pexels-leon-ardho-1552242.jpg');
+    }
+    20% {
+        background-image: url('../images/pexels-mister-mister-3490348.jpg');
+    }
+    40% {
+        background-image: url('../images/pexels-victor-freitas-841130.jpg');
+    }
+    60% {
+        background-image: url('../images/pexels-william-choquette-1954524.jpg');
+    }
+    80% {
+        background-image: url('../images/pexels-zakaria-boumliha-2827392.jpg');
+    }
+    100% {
+        background-image: url('../images/pexels-leon-ardho-1552242.jpg');
+    }
+}
+
+.hero h2,
+.hero p {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #000; /* Change heading and paragraph color to black */
+}
+
+.button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #e91e63;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #c2185b;
+}
+
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}

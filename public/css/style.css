@@ -1,12 +1,89 @@
-body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; }
-.container { max-width: 1200px; margin: auto; padding: 20px; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
-nav ul { list-style: none; padding: 0; }
-nav ul li { display: inline; margin-right: 20px; }
-nav ul li a { text-decoration: none; color: #333; }
-.hero { text-align: center; padding: 100px 20px; }
-.hero h1 { font-size: 2.5em; margin-bottom: 20px; }
-.hero p { font-size: 1.2em; margin-bottom: 40px; }
-.button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-.button:hover { background-color: #0056b3; }
-footer { background-color: #f8f9fa; text-align: center; padding: 20px; margin-top: 40px; }
+body { 
+    font-family: 'Arial', sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    background-color: #f0f8ff; /* Light Blue */
+}
+
+.container { 
+    max-width: 500px; /* Adjusted container width */
+    margin: auto; 
+    padding: 20px; 
+    background-color: #f8f9fa; /* Light Gray */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow */
+}
+
+header { 
+    text-align: center; /* Center the header */
+    padding: 20px 0; 
+}
+
+header h2 { 
+    font-size: 2em; 
+    color: #006400; /* Dark Green */
+}
+
+main { 
+    text-align: center; /* Center the form and content */
+}
+
+form { 
+    margin-bottom: 20px; /* Add space between form and paragraph */
+}
+
+label { 
+    display: block; 
+    margin-bottom: 10px; 
+    color: #333; /* Dark Gray */
+}
+
+input[type="email"],
+input[type="password"] { 
+    width: calc(100% - 22px); /* Adjust input width */
+    padding: 10px; 
+    margin-bottom: 20px; 
+    border: 1px solid #ccc; /* Light Gray border */
+    border-radius: 5px; 
+    font-size: 1em; 
+}
+
+button[type="submit"] { 
+    display: inline-block; 
+    background-color: #8B0000; /* Dark Red */
+    color: white; 
+    padding: 10px 20px; 
+    text-decoration: none; 
+    border: none; 
+    border-radius: 5px; 
+    font-size: 1em; 
+    cursor: pointer; 
+}
+
+button[type="submit"]:hover { 
+    background-color: #800000; /* Darker Red */
+}
+
+#errorMessage { 
+    color: #8B0000; /* Dark Red for error messages */
+}
+
+p { 
+    color: #333; /* Dark Gray */
+}
+
+a { 
+    color: #007bff; /* Blue */
+    text-decoration: none; 
+}
+
+a:hover { 
+    text-decoration: underline; 
+}
+
+footer { 
+    background-color: #7ca0c4; /* Light Gray */
+    text-align: center; 
+    padding: 20px; 
+    margin-top: 40px; 
+}
