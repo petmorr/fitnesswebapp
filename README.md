@@ -1,4 +1,4 @@
-<h1>FitnessPal: Your Personalized Fitness Journey</h1>
+<h1>FitnessPal: Your Personalised Fitness Journey</h1>
 Welcome to FitnessPal, your ultimate destination for achieving your fitness and health goals quickly and precisely. Our platform is meticulously designed to cater to your needs, providing a holistic approach to fitness, nutrition, and overall well-being.
 
 <h2>Features</h2>
@@ -9,7 +9,7 @@ Tailored to your fitness goals, preferences, and physical condition, our workout
 Receive custom nutrition plans aligned with your fitness objectives and dietary preferences or restrictions, ensuring you fuel your body for success.
 
 <h3>Progress Tracking</h3>
-Monitor your progress with monthly tracking of physical and health metrics. This allows you to visualize your journey and celebrate your achievements.
+Monitor your progress by tracking physical and health metrics monthly. This allows you to visualize your journey and celebrate your achievements.
 
 <h3>Trainer Interaction</h3>
 You can communicate directly with certified personal trainers for guidance, motivation, and feedback, keeping you on track towards your goals.
