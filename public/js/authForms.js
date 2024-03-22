@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Script loaded');
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
+            console.log('Login Form');
             e.preventDefault();
             submitForm('/api/login', new FormData(loginForm));
         });
@@ -34,7 +36,6 @@ async function submitForm(url, formData) {
             document.getElementById('errorMessage').textContent = result.errorMessage || 'An error occurred.';
         }
     } catch (error) {
-        console.error('Error:', error);
         document.getElementById('errorMessage').textContent = 'An error occurred.';
     }
 }

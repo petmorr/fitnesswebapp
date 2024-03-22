@@ -83,7 +83,6 @@ exports.register = async (req, res) => {
     // Send a success response
     res.json({ success: true, message: "Registration successful" });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
@@ -110,16 +109,16 @@ exports.login = async (req, res) => {
       // Compare the submitted password with the hashed password in the database
       const isMatch = await user.comparePassword(password);
       if (!isMatch) {
-        return res.status(400).json({ success: false, errorMessage: 'Invalid password,' });
+        return res.status(400).json({ success: false, errorMessage: 'Invalid password.' });
       }
 
       // Set the session variables
       req.session.userId = user._id;
       req.session.isAuthenticated = true;
+
       // Send a success response
       res.json({ success: true, message: "Login successful" });
   } catch (error) {
-      console.error(error);
       return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
@@ -128,14 +127,13 @@ exports.renderDashboardPage = (req, res) => {
   try {
     res.render('dashboard', { title: 'Dashboard' });
   } catch (error) {
-    console.error("Dashboard rendering error:", error);
     res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
 
 exports.logout = (req, res) => {
   req.session.destroy(() => {
-      res.clearCookie('connect.sid', { path: '/' }); // Adjust the cookie name if needed
+      res.clearCookie('connect.sid', { path: '/' });
       res.redirect('/login');
   });
 };
