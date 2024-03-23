@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage, logout } = require('../controllers/authController');
+const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage, currentUser, logout } = require('../controllers/authController');
 const authenticateToken = require('../middleware/authMiddleware');
 
 // Route to render the landing page
@@ -14,8 +14,11 @@ router.post('/api/register', register); // Handle form submission
 router.get('/login', renderLoginPage); // Render the login page
 router.post('/api/login', login); // Handle form submission
 
+// Route to get the current userId
+router.get('/api/current-user', authenticateToken, currentUser);
+
 // Route to logout
-router.get('/logout', logout);
+router.get('/logout', authenticateToken, logout);
 
 // Route to render the dashboard
 router.get('/dashboard', authenticateToken, renderDashboardPage);

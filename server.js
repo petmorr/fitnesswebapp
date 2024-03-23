@@ -8,6 +8,7 @@ const path = require('path');
 const publicDirectoryPath = path.join(__dirname, 'public');
 const mustacheExpress = require('mustache-express');
 const userRoutes = require('./routes/userRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,8 +46,9 @@ const PORT = process.env.PORT || 3000;
     app.set('view engine', 'mustache');
     app.set('views', __dirname + '/views');
 
-    // User routes
+    // Routes
     app.use('/', userRoutes);
+    app.use('/workout', workoutRoutes);
 
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {

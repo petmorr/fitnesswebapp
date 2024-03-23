@@ -10,7 +10,7 @@ exports.renderRegisterPage = (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoals } = req.body;
+    const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoal } = req.body;
 
     // Initialize an array to hold the names of missing fields
     let missingFields = [];
@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
     if (!age) missingFields.push("age");
     if (!weight) missingFields.push("weight");
     if (!height) missingFields.push("height");
-    if (!fitnessGoals || fitnessGoals.length === 0) missingFields.push("fitnessGoals");
+    if (!fitnessGoal) missingFields.push("fitnessGoal");
     if (!fitnessLevel) missingFields.push("fitnessLevel");
 
     // If there are any missing fields, return a message specifying which ones
@@ -74,7 +74,7 @@ exports.register = async (req, res) => {
       weight: finalWeight,
       height: finalHeight,
       fitnessLevel,
-      fitnessGoals
+      fitnessGoal
     });
 
     // Save the user to the database
@@ -128,6 +128,14 @@ exports.renderDashboardPage = (req, res) => {
     res.render('dashboard', { title: 'Dashboard' });
   } catch (error) {
     res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+  }
+};
+
+exports.currentUser = async (req, res) => {
+  if(req.session.isAuthenticated && req.session.userId) {
+    res.json({ userId: req.session.userId });
+  } else {
+    res.status(401).json({ errorMessage: 'User not authenticated' });
   }
 };
 

@@ -7,8 +7,13 @@
 <body>
     <h1>Welcome to Your Dashboard</h1>
     <p>This is a protected area only accessible by authenticated users.</p>
+    <div id="todayWorkoutPreview">
+        <h2>Today's Workout Preview</h2>
+        <p>No workout planned for today. <a href="/workout/workout-plan">Check out your full workout plan.</a></p>
+    </div>
     <form action="/logout" method="GET">
         <button type="submit">Logout</button>
     </form>
 </body>
+<script src="/js/dashboard.js"></script>
 </html>

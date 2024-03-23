@@ -39,35 +39,23 @@
         <option value="ftin">ft & in</option>
       </select>
 
-      <fieldset>
-        <legend>Fitness Levels:</legend>
-        <input type="checkbox" id="beginner" name="fitnessLevel" value="beginner">
-        <label for="beginner">Beginner</label><br>
+      <select name="fitnessGoal" required>
+        <option value="">Select your fitness goal</option>
+        <option value="cardio">Cardio</option>
+        <option value="olympicWeightlifting">Olympic Weightlifting</option>
+        <option value="plyometrics">Plyometrics</option>
+        <option value="powerlifting">Powerlifting</option>
+        <option value="strength">Strength</option>
+        <option value="stretching">Stretching</option>
+        <option value="strongman">Strongman</option>
+      </select>
 
-        <input type="checkbox" id="intermediate" name="fitnessLevel" value="intermediate">
-        <label for="intermediate">Intermediate</label><br>
-
-        <input type="checkbox" id="expert" name="fitnessLevel" value="expert">
-        <label for="expert">Expert</label><br>
-      </fieldset>
-
-      <fieldset>
-        <legend>Fitness Goals:</legend>
-        <input type="checkbox" id="loseWeight" name="fitnessGoals" value="loseWeight">
-        <label for="loseWeight">Lose weight</label><br>
-        
-        <input type="checkbox" id="buildMuscle" name="fitnessGoals" value="buildMuscle">
-        <label for="buildMuscle">Build muscle</label><br>
-        
-        <input type="checkbox" id="feelFitter" name="fitnessGoals" value="feelFitter">
-        <label for="feelFitter">Feel fitter</label><br>
-        
-        <input type="checkbox" id="improveFlexibility" name="fitnessGoals" value="improveFlexibility">
-        <label for="improveFlexibility">Improve flexibility</label><br>
-        
-        <input type="checkbox" id="increaseStamina" name="fitnessGoals" value="increaseStamina">
-        <label for="increaseStamina">Increase stamina/endurance</label>
-      </fieldset>
+      <select name="fitnessLevel" required>
+        <option value="">Select your fitness level</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="expert">Expert</option>
+      </select>
 
       <button type="submit">Register</button>
     </form>

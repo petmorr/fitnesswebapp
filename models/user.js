@@ -35,10 +35,10 @@ const userSchema = new mongoose.Schema({
     enum: ['beginner', 'intermediate', 'advanced'],
     default: 'beginner'
   },
-  fitnessGoals: [{
+  fitnessGoal: [{
     type: String,
     required: true,
-    enum: ['loseWeight', 'buildMuscle', 'feelFitter', 'improveFlexibility', 'increaseStamina']
+    enum: ['cardio', 'olympic_weightlifting', 'plyometrics', 'powerlifting', 'strength', 'stretching', 'strongman']
   }]
 });
 
