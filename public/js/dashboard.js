@@ -1,15 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/current_user', { credentials: 'include' })
-        .then(response => response.json())
-        .then(data => {
-            const userId = data.userId;
-            fetchWorkoutPreview(userId);
-        })
-        .catch(error => console.error('Error fetching user ID:', error));
-});
-
 function fetchWorkoutPreview(userId) {
-    fetch(`/api/workout-preview/${userId}`, { credentials: 'include' })
+    fetch(`/workout/api/workout-preview`, { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (data.success && data.data.length > 0) {
