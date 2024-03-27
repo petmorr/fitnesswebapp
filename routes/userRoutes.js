@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage, currentUser, logout } = require('../controllers/authController');
+const { renderLandingPage, renderRegisterPage, register, renderLoginPage, login, renderDashboardPage, logout, currentUser } = require('../controllers/authController');
 const authenticateToken = require('../middleware/authMiddleware');
 
 // Route to render the landing page

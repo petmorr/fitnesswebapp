@@ -1,6 +1,10 @@
 const axios = require('axios');
 const User = require('../models/user');
 
+exports.generateWorkoutPage = (req, res) => {
+    res.render('workoutPlan', { title: 'Your Workout Plan' });
+}
+
 exports.workoutPlan = async (req, res) => {
     const userId = req.session.userId; 
     const user = await User.findById(userId);

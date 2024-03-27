@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function fetchWorkoutPreview(userId) {
-    fetch(`/workout/workout-preview/${userId}`, { credentials: 'include' })
+    fetch(`/api/workout-preview/${userId}`, { credentials: 'include' })
         .then(response => response.json())
         .then(data => {
             if (data.success && data.data.length > 0) {

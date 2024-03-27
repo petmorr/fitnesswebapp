@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 3000;
 (async () => {
   try {
     const mongoose = await connectDB();
-    console.log('Database connected, starting server...');
 
     app.use(cors());
 

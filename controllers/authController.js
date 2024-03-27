@@ -132,8 +132,8 @@ exports.renderDashboardPage = (req, res) => {
 };
 
 exports.currentUser = async (req, res) => {
-  if(req.session.isAuthenticated && req.session.userId) {
-    res.json({ userId: req.session.userId });
+  if(req.userId) {
+    res.json({ userId: req.userId });
   } else {
     res.status(401).json({ errorMessage: 'User not authenticated' });
   }

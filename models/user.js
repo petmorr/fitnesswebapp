@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   fitnessLevel: {
     type: String,
+    required: true,
     enum: ['beginner', 'intermediate', 'advanced'],
     default: 'beginner'
   },

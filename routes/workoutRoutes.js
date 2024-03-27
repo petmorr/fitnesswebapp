@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { workoutPlan } = require('../controllers/workoutController');
+const { generateWorkoutPage, workoutPlan, workoutPlanPreview } = require('../controllers/workoutController');
 const authenticateToken = require('../middleware/authMiddleware');
 
-router.get('/workout-plan', authenticateToken, workoutPlan);
+// Routes for Workout Page
+router.get('/workout-plan', authenticateToken, generateWorkoutPage);
+router.get('/api/workout-plan', authenticateToken, workoutPlan);
+// router.get('/api/workout-preview', authenticateToken, workoutPlanPreview);
 
 module.exports = router;
