@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const exerciseSchema = new mongoose.Schema({
+  name: String,
+  muscle: String,
+  sets: Number,
+  reps: Number,
+  weight: Number,
+  feedback: { type: String, enum: ['positive', 'negative', 'neutral'], default: 'neutral' }
+});
+
+const workoutDaySchema = new mongoose.Schema({
+  day: String,
+  exercises: [exerciseSchema]
+});
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -40,8 +54,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['cardio', 'olympic_weightlifting', 'plyometrics', 'powerlifting', 'strength', 'stretching', 'strongman']
-  }]
+  }],
+  weeklyWorkoutPlan: [workoutDaySchema],
+  workoutDays: {
+    type: [String],
+    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    default: []
+},
 });
+
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
