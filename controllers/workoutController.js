@@ -1,8 +1,9 @@
 const axios = require('axios');
 const User = require('../models/user');
+const cron = require('node-cron');
 
 exports.generateWorkoutPage = (req, res) => {
-    res.render('workoutPlan', { title: 'Your Workout Plan' });
+    res.render('workoutPlan', { title: 'Your Workout Plan', });
 };
 
 async function fetchExercisesFromAPI(fitnessGoal, fitnessLevel) {
@@ -37,9 +38,10 @@ function mapExercises(data, fitnessLevel) {
         return {
             name: exercise.name,
             muscle: exercise.muscle,
-            sets, // Use the sets from the parameters
-            reps, // Use the reps from the parameters
-            weight, // Use the weight from the parameters
+            // Use parameters to set values for sets, reps, and weight
+            sets,
+            reps,
+            weight,
             feedback: 'neutral' // Default feedback
         };
     });
@@ -48,7 +50,7 @@ function mapExercises(data, fitnessLevel) {
 function getExerciseParameters(muscle, fitnessLevel) {
     const parameters = {
         beginner: {
-            abdominals: { sets: 3, reps: 15, weight: 0 },
+            abdominals: { sets: 3, reps: 15, weight: 5 },
             abductors: { sets: 2, reps: 15, weight: 5 },
             adductors: { sets: 2, reps: 15, weight: 5 },
             biceps: { sets: 2, reps: 15, weight: 5 },
@@ -60,14 +62,14 @@ function getExerciseParameters(muscle, fitnessLevel) {
             lats: { sets: 2, reps: 12, weight: 10 },
             lower_back: { sets: 2, reps: 15, weight: 5 },
             middle_back: { sets: 2, reps: 12, weight: 10 },
-            neck: { sets: 2, reps: 15, weight: 0 },
+            neck: { sets: 2, reps: 15, weight: 5 },
             quadriceps: { sets: 2, reps: 15, weight: 5 },
             traps: { sets: 2, reps: 15, weight: 5 },
             triceps: { sets: 2, reps: 15, weight: 5 },
         },
         intermediate: {
             // Moderate weights for building muscle and strength
-            abdominals: { sets: 4, reps: 20, weight: 0 },
+            abdominals: { sets: 4, reps: 20, weight: 10 },
             abductors: { sets: 3, reps: 12, weight: 10 },
             adductors: { sets: 3, reps: 12, weight: 10 },
             biceps: { sets: 3, reps: 10, weight: 10 },
@@ -79,14 +81,14 @@ function getExerciseParameters(muscle, fitnessLevel) {
             lats: { sets: 3, reps: 8, weight: 20 },
             lower_back: { sets: 3, reps: 10, weight: 10 },
             middle_back: { sets: 3, reps: 8, weight: 20 },
-            neck: { sets: 3, reps: 20, weight: 0 },
+            neck: { sets: 3, reps: 20, weight: 10 },
             quadriceps: { sets: 3, reps: 10, weight: 15 },
             traps: { sets: 3, reps: 10, weight: 10 },
             triceps: { sets: 3, reps: 10, weight: 10 },
         },
         expert: {
             // Heavy weights for maximum strength and muscle gain
-            abdominals: { sets: 5, reps: 25, weight: 0 },
+            abdominals: { sets: 5, reps: 25, weight: 15 },
             abductors: { sets: 4, reps: 8, weight: 15 },
             adductors: { sets: 4, reps: 8, weight: 15 },
             biceps: { sets: 4, reps: 6, weight: 15 },
@@ -98,7 +100,7 @@ function getExerciseParameters(muscle, fitnessLevel) {
             lats: { sets: 4, reps: 6, weight: 30 },
             lower_back: { sets: 4, reps: 8, weight: 15 },
             middle_back: { sets: 4, reps: 6, weight: 30 },
-            neck: { sets: 4, reps: 25, weight: 0 },
+            neck: { sets: 4, reps: 25, weight: 15 },
             quadriceps: { sets: 4, reps: 8, weight: 20 },
             traps: { sets: 4, reps: 8, weight: 15 },
             triceps: { sets: 4, reps: 6, weight: 15 },
@@ -108,21 +110,26 @@ function getExerciseParameters(muscle, fitnessLevel) {
     return parameters[fitnessLevel][muscle];
 }
 
-function adjustExercisesBasedOnFeedback(exercises, userFeedback) {
+function adjustExercisesBasedOnFeedback(exercises, feedbackData) {
     return exercises.map(exercise => {
-        const feedback = userFeedback.find(fb => fb.exerciseName === exercise.name)?.feedback || 'neutral';
+        const feedbackForExercise = feedbackData.find(fb => fb.name === exercise.name);
         let weightAdjustmentFactor = 1;
-        switch (feedback) {
-            case 'positive':
-                weightAdjustmentFactor = 1.1;
-                break;
-            case 'negative':
-                weightAdjustmentFactor = 0.9;
-                break;
+
+        if (feedbackForExercise) {
+            switch (feedbackForExercise.feedback) {
+                case 'positive':
+                    weightAdjustmentFactor = 1.1;
+                    break;
+                case 'negative':
+                    weightAdjustmentFactor = 0.9;
+                    break;
+                // 'neutral' or no feedback leads to no change
+            }
         }
+
         return {
             ...exercise,
-            weight: Math.round(exercise.weight * weightAdjustmentFactor)
+            weight: Math.round(exercise.weight * weightAdjustmentFactor),
         };
     });
 }
@@ -183,3 +190,48 @@ exports.generateAndUpdateWorkoutPlan = async (req, res) => {
         res.status(500).json({ success: false, errorMessage: 'Failed to generate or update workout plan' });
     }
 };
+
+exports.submitWorkoutFeedback = async (req, res) => {
+    const { userId } = req.session;
+    const feedbackData = req.body; // This should be an array of { day, name, feedback }
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Process feedback for each submitted exercise
+        feedbackData.forEach(feedbackItem => {
+            const { day, name, feedback } = feedbackItem;
+            // Find the corresponding day and exercise
+            const dayPlan = user.weeklyWorkoutPlan.find(plan => plan.day === day);
+            if (dayPlan) {
+                const exercise = dayPlan.exercises.find(ex => ex.name === name);
+                if (exercise) {
+                    exercise.feedback = feedback;
+                }
+            }
+        });
+
+        await user.save();
+        res.json({ success: true, message: 'Feedback submitted successfully' });
+
+        // Consider triggering a workout plan update here if needed
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        res.status(500).json({ success: false, errorMessage: 'Failed to submit feedback' });
+    }
+};
+
+// Cron job to generate new workout plans for all users at the start of each week
+cron.schedule('0 0 * * 1', async () => {
+    console.log('Generating new workout plans for all users...');
+
+    const users = await User.find({});
+    users.forEach(async (user) => {
+        const exercises = await fetchExercisesFromAPI(user.fitnessGoal, user.fitnessLevel);
+        user.weeklyWorkoutPlan = generateBalancedWeeklyWorkoutPlan(exercises, user.workoutDays);
+        await user.save();
+    });
+});

@@ -1,0 +1,22 @@
+.day-plan h3 {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.day-plan ul {
+    list-style: none;
+    padding: 0;
+}
+
+.day-plan li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #e9e9e9;
+    border-radius: 5px;
+}
+
+.day-plan li span {
+    display: block;
+    margin-bottom: 5px;
+}

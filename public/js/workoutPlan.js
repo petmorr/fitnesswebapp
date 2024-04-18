@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const savePreferencesBtn = document.getElementById('savePreferencesBtn');
-    // Ensure this ID matches your button container in the HTML
     const generateWorkoutPlanBtn = document.getElementById('generateWorkoutPlanBtn');
+    const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
 
     savePreferencesBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -16,17 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Workout days saved successfully.');
                 // Directly show the generate workout plan button container
                 generateWorkoutPlanBtn.style.display = 'block';
             } else {
                 console.error('Failed to save workout days.');
-                // Optionally, display an error message to the user
             }
         })
         .catch(error => {
             console.error('Error saving workout days:', error);
-            // Optionally, display an error message to the user
         });
     });
 
@@ -49,15 +46,18 @@ function fetchWorkoutPlan() {
 function displayWorkoutPlan(weeklyWorkoutPlan) {
     const container = document.getElementById('weeklyWorkoutPlan');
     container.innerHTML = ''; // Clear existing content
-    weeklyWorkoutPlan.forEach(dayPlan => {
+
+    weeklyWorkoutPlan.forEach((dayPlan, dayIndex) => { // Add dayIndex here
         const dayDiv = document.createElement('div');
         dayDiv.innerHTML = `<h3>${dayPlan.day}</h3>`;
         const exercisesList = document.createElement('ul');
-        dayPlan.exercises.forEach((exercise, index) => {
+
+        dayPlan.exercises.forEach((exercise, exerciseIndex) => { // Add exerciseIndex here
             exercisesList.innerHTML += `
                 <li>
-                    ${index + 1}. ${exercise.name}: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
-                    - Feedback: <select data-exercise-id="${exercise._id}">
+                    ${exercise.name}: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
+                    - Completed: <input type="checkbox" class="exercise-completed" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
+                    - Feedback: <select class="exercise-feedback" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
                         <option value="neutral">Neutral</option>
                         <option value="positive">Positive</option>
                         <option value="negative">Negative</option>
@@ -68,4 +68,50 @@ function displayWorkoutPlan(weeklyWorkoutPlan) {
         dayDiv.appendChild(exercisesList);
         container.appendChild(dayDiv);
     });
+
+    // Ensure event listeners are properly added after updating the list
+    addExerciseEventListeners();
+}
+
+function addExerciseEventListeners() {
+    document.querySelectorAll('.exercise-completed').forEach(checkbox => {
+        checkbox.addEventListener('change', handleExerciseCompletion);
+    });
+}
+
+function handleExerciseCompletion(event) {
+    const completedCheckboxes = document.querySelectorAll('.exercise-completed');
+    const allCompleted = [...completedCheckboxes].every(checkbox => checkbox.checked);
+
+    if (allCompleted) {
+        submitFeedbackAutomatically();
+    }
+}
+
+function submitFeedbackAutomatically() {
+    const feedbackData = [...document.querySelectorAll('.exercise-feedback')].map((select, index) => {
+        const checkbox = document.querySelectorAll('.exercise-completed')[index];
+        return {
+            dayIndex: checkbox.dataset.dayIndex,
+            exerciseIndex: checkbox.dataset.exerciseIndex,
+            completed: checkbox.checked,
+            feedback: select.value
+        };
+    });
+
+    fetch('/workout/api/submitFeedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedbackData),
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            fetchWorkoutPlan(); // Refresh the page to show new workout plan
+        } else {
+            console.error('Feedback submission failed');
+        }
+    })
+    .catch(error => console.error('Error submitting feedback:', error));
 }

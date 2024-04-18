@@ -7,6 +7,7 @@ const exerciseSchema = new mongoose.Schema({
   sets: Number,
   reps: Number,
   weight: Number,
+  completed: { type: Boolean, default: false },
   feedback: { type: String, enum: ['positive', 'negative', 'neutral'], default: 'neutral' }
 });
 
