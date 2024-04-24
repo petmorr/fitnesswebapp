@@ -47,15 +47,15 @@ function displayWorkoutPlan(weeklyWorkoutPlan) {
     const container = document.getElementById('weeklyWorkoutPlan');
     container.innerHTML = ''; // Clear existing content
 
-    weeklyWorkoutPlan.forEach((dayPlan, dayIndex) => { // Add dayIndex here
+    weeklyWorkoutPlan.forEach((dayPlan, dayIndex) => {
         const dayDiv = document.createElement('div');
         dayDiv.innerHTML = `<h3>${dayPlan.day}</h3>`;
         const exercisesList = document.createElement('ul');
 
-        dayPlan.exercises.forEach((exercise, exerciseIndex) => { // Add exerciseIndex here
+        dayPlan.exercises.forEach((exercise, exerciseIndex) => {
             exercisesList.innerHTML += `
                 <li>
-                    ${exercise.name}: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
+                    <span class="exercise-name">${exercise.name}</span>: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
                     - Completed: <input type="checkbox" class="exercise-completed" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
                     - Feedback: <select class="exercise-feedback" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
                         <option value="neutral">Neutral</option>
@@ -89,15 +89,23 @@ function handleExerciseCompletion(event) {
 }
 
 function submitFeedbackAutomatically() {
-    const feedbackData = [...document.querySelectorAll('.exercise-feedback')].map((select, index) => {
-        const checkbox = document.querySelectorAll('.exercise-completed')[index];
+    const feedbackData = [...document.querySelectorAll('.exercise-feedback')].map((select) => {
+        const exerciseContainer = select.closest('li');
+        const exerciseName = exerciseContainer.querySelector('.exercise-name').innerText; 
+        const checkbox = exerciseContainer.querySelector('.exercise-completed');
+        const dayIndex = checkbox.dataset.dayIndex;
+        const exerciseIndex = checkbox.dataset.exerciseIndex;
+
         return {
-            dayIndex: checkbox.dataset.dayIndex,
-            exerciseIndex: checkbox.dataset.exerciseIndex,
+            dayIndex: dayIndex,
+            exerciseIndex: exerciseIndex,
+            name: exerciseName.trim(),
             completed: checkbox.checked,
             feedback: select.value
         };
     });
+
+    console.log('Submitting feedback:', JSON.stringify(feedbackData)); // Ensure this logs actual data
 
     fetch('/workout/api/submitFeedback', {
         method: 'POST',
@@ -107,11 +115,12 @@ function submitFeedbackAutomatically() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            fetchWorkoutPlan(); // Refresh the page to show new workout plan
-        } else {
-            console.error('Feedback submission failed');
+        if (!data.success) {
+            console.error('Feedback submission failed:', data.errorMessage);
+            throw new Error(data.errorMessage || 'Unknown error during feedback submission');
         }
+        console.log("Feedback submitted successfully, response:", data);
+        fetchWorkoutPlan(); // Refresh the plan
     })
     .catch(error => console.error('Error submitting feedback:', error));
 }
