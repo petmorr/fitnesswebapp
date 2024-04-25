@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="/css/workoutPlan.css"/>
+</head>
+<body>
+    <form id="workoutDaysForm">
+        <h3>Select your workout days:</h3>
+        <label><input type="checkbox" name="workoutDays" value="Monday"> Monday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Tuesday"> Tuesday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Wednesday"> Wednesday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Thursday"> Thursday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Friday"> Friday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Saturday"> Saturday</label><br>
+        <label><input type="checkbox" name="workoutDays" value="Sunday"> Sunday</label><br>
+        <button type="button" id="savePreferencesBtn">Save Preferences</button>
+    </form>
+    <button id="generateWorkoutPlanBtn" style="display:none;">Generate Workout Plan</button>
+    <div id="weeklyWorkoutPlan"></div>
+<script src="/js/workoutPlan.js" defer></script>
+</body>
+</html>

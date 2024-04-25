@@ -1,9 +1,14 @@
+// Middleware function to authenticate token
 const authenticateToken = (req, res, next) => {
-  if (req.session.isAuthenticated) {
+  // Check if the user is authenticated
+  if (req.session || req.session.userId) {
+    // If authenticated, proceed to the next middleware or route handler
     next();
   } else {
-      res.redirect('/login');
+    // If not authenticated, redirect the user to the login page
+    res.redirect('/login');
   }
 };
 
+// Export the authenticateToken middleware function
 module.exports = authenticateToken;

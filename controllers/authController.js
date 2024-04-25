@@ -1,99 +1,72 @@
+const { convertWeight, convertHeight } = require('../utils/utils');
+const logger = require('../utils/logger');
 const User = require('../models/user');
 
+// Render the landing page
 exports.renderLandingPage = (req, res) => {
-  res.render('landing', { title: 'Welcome to FitnessPal' });
+  logger.info('Rendering the landing page');
+  return res.render('landing', { title: 'Welcome to FitnessPal' });
 };
 
+// Render the registration page
 exports.renderRegisterPage = (req, res) => {
-  res.render('register', { title: 'Register for FitnessPal' });
+  logger.info('Rendering the registration page');
+  return res.render('register', { title: 'Register for FitnessPal' });
 };
 
+// Handle user registration
 exports.register = async (req, res) => {
   try {
-    const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoals } = req.body;
+    logger.debug('Starting user registration');
+    const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoal } = req.body;
+    let missingFields = ['email', 'password', 'confirmPassword', 'age', 'weight', 'height', 'fitnessGoal', 'fitnessLevel'].filter(field => !req.body[field]);
 
-    // Initialize an array to hold the names of missing fields
-    let missingFields = [];
-    
-    // Check each field and add its name to the array if it's missing
-    if (!email) missingFields.push("email");
-    if (!password) missingFields.push("password");
-    if (!confirmPassword) missingFields.push("confirmPassword");
-    if (!age) missingFields.push("age");
-    if (!weight) missingFields.push("weight");
-    if (!height) missingFields.push("height");
-    if (!fitnessGoals || fitnessGoals.length === 0) missingFields.push("fitnessGoals");
-    if (!fitnessLevel) missingFields.push("fitnessLevel");
-
-    // If there are any missing fields, return a message specifying which ones
     if (missingFields.length > 0) {
-      return res.status(400).json({ success: false, errorMessage: `The following fields are missing or empty: ${missingFields.join(', ')}.` });
+      logger.warn('Missing fields during registration', { missingFields });
+      return res.status(400).json({ success: false, errorMessage: `Missing fields: ${missingFields.join(', ')}.` });
     }
 
-    // Confirm password check
     if (password !== confirmPassword) {
+      logger.warn('Password mismatch during registration', { email });
       return res.status(400).json({ success: false, errorMessage: 'Passwords do not match.' });
     }
 
-    // Check for existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      logger.warn('Attempt to register with an existing email', { email });
       return res.status(400).json({ success: false, errorMessage: 'User already exists.' });
     }
 
-    // Convert weight to kilograms
-    let finalWeight = parseFloat(weight);
-    if (weightUnit === 'lbs') {
-      finalWeight = weight * 0.453592;
-    } else if (weightUnit === 'stone') {
-      finalWeight = weight * 6.35029;
+    let finalWeight = convertWeight(weight, weightUnit);
+    if (finalWeight < 20 || finalWeight > 635) {
+      return res.status(400).json({ success: false, errorMessage: 'Invalid weight.' });
     }
 
-    // Check if weight is within the valid range
-    if(finalWeight < 20 || finalWeight > 635) {
-      return res.status(400).json({ success: false, errorMessage: 'Invalid weight, must be between 20kg and 635kg' });
+    let finalHeight = convertHeight(height, heightUnit);
+    if (finalHeight < 91.44 || finalHeight > 272) {
+      logger.warn('Invalid height specified', { finalHeight });
+      return res.status(400).json({ success: false, errorMessage: 'Invalid height.' });
     }
 
-    // Convert height to centimeters
-    let finalHeight = parseFloat(height);
-    if (heightUnit === 'ftin') {
-      const [feet, inches] = height.toString().split('.').map(part => parseFloat(part));
-      finalHeight = feet * 30.48 + inches * 2.54;
-    }
-
-    // Check if height is within the valid range
-    if(finalHeight < 91.44 || finalHeight > 272) {
-      return res.status(400).json({ success: false, errorMessage: 'Invalid height, must be between 91.44cm and 272cm' });
-    }
-
-    // Create and save the user
-    const user = new User({
-      email,
-      password,
-      age,
-      weight: finalWeight,
-      height: finalHeight,
-      fitnessLevel,
-      fitnessGoals
-    });
-
-    // Save the user to the database
+    const user = new User({ email, password, age, weight: finalWeight, height: finalHeight, fitnessLevel, fitnessGoal });
     await user.save();
-
-    // Send a success response
-    res.json({ success: true, message: "Registration successful" });
+    logger.info('User registered successfully', { email });
+    return res.json({ success: true, message: "Registration successful" });
   } catch (error) {
-    res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+    logger.error('Registration failed', { error });
+    return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
 
+// Render the login page
 exports.renderLoginPage = (req, res) => {
-  res.render('login', { title: 'Login to FitnessPal' });
+  logger.info('Rendering the login page');
+  return res.render('login', { title: 'Login to FitnessPal' });
 };
 
+// Handle user login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
       // Validate email and password
       if (!email || !password) {
@@ -114,26 +87,46 @@ exports.login = async (req, res) => {
 
       // Set the session variables
       req.session.userId = user._id;
-      req.session.isAuthenticated = true;
-
-      // Send a success response
-      res.json({ success: true, message: "Login successful" });
+      req.session.save(err => {
+        if (err) {
+          logger.error('Session save error', err);
+          return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+        }
+        res.json({ success: true, message: "Login successful" });
+      });
   } catch (error) {
       return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
 
+// Render the dashboard page
 exports.renderDashboardPage = (req, res) => {
-  try {
-    res.render('dashboard', { title: 'Dashboard' });
-  } catch (error) {
-    res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+  logger.info('Rendering the dashboard page');
+  return res.render('dashboard', { title: 'Dashboard' });
+};
+
+// Retrieve current user session data
+exports.currentUser = (req, res) => {
+  if (req.session && req.session.userId) {
+    return res.json({ success: true, userId: req.session.userId });
+  } else {
+    logger.warn('Attempt to access session data without authentication');
+    return res.status(401).json({ success: false, errorMessage: 'User not authenticated' });
   }
 };
 
+// Handle user logout
 exports.logout = (req, res) => {
-  req.session.destroy(() => {
-      res.clearCookie('connect.sid', { path: '/' });
+  if (req.session) {
+      req.session.destroy(err => {
+          if (err) {
+              logger.error('Session destruction error', err);
+              return res.status(500).json({ success: false, errorMessage: 'Internal server error during logout' });
+          }
+          res.clearCookie('connect.sid', { path: '/' });
+          res.redirect('/login');
+      });
+  } else {
       res.redirect('/login');
-  });
+  }
 };

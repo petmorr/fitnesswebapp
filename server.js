@@ -5,24 +5,31 @@ const cors = require('cors');
 const MongoStore = require('connect-mongo');
 const connectDB = require('./config/db');
 const path = require('path');
-const publicDirectoryPath = path.join(__dirname, 'public');
 const mustacheExpress = require('mustache-express');
 const userRoutes = require('./routes/userRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
+const logger = require('./config/logger'); // Assume a logger configuration exists
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+/**
+ * Initialize and configure the Express server.
+ */
 (async () => {
   try {
+    // Establish database connection
     const mongoose = await connectDB();
-    console.log('Database connected, starting server...');
+    logger.info('Database connected successfully');
 
+    // CORS middleware to handle cross-origin requests
     app.use(cors());
 
-    // Parse JSON bodies
+    // Parse incoming requests with JSON payloads
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // Configure session management with MongoDB storage
     app.use(session({
       secret: process.env.JWT_SECRET,
       resave: false,
@@ -33,23 +40,28 @@ const PORT = process.env.PORT || 3000;
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
       }
     }));
 
-    // Serving static files
+    // Serve static files from the 'public' directory
+    const publicDirectoryPath = path.join(__dirname, 'public');
     app.use(express.static(publicDirectoryPath));
 
-    // Setting up Mustache as the view engine
+    // Setup Mustache as the view engine for rendering HTML
     app.engine('mustache', mustacheExpress());
     app.set('view engine', 'mustache');
-    app.set('views', __dirname + '/views');
+    app.set('views', path.join(__dirname, 'views'));
 
-    // User routes
+    // Apply routes
     app.use('/', userRoutes);
+    app.use('/workout', workoutRoutes);
 
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // Start listening for requests
+    app.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT}`);
+    });
   } catch (error) {
-    console.error('Failed to connect to the database:', error);
+    logger.error('Failed to connect to the database:', error);
   }
 })();
