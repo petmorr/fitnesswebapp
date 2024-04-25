@@ -26,15 +26,29 @@ function saveWorkoutPreferences(event) {
 
 function fetchWorkoutPlan() {
     fetch('/workout/api/workout-plan', { credentials: 'include' })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
-            if (data.success && data.weeklyWorkoutPlan.length > 0) {
-                displayWorkoutPlan(data.weeklyWorkoutPlan);
+            if (data.success) {
+                if (data.weeklyWorkoutPlan && data.weeklyWorkoutPlan.length > 0) {
+                    displayWorkoutPlan(data.weeklyWorkoutPlan);
+                } else {
+                    document.getElementById('weeklyWorkoutPlan').innerHTML = 'No workout plans found.';
+                }
             } else {
-                document.getElementById('weeklyWorkoutPlan').innerHTML = 'No workout plans found.';
+                throw new Error(data.errorMessage || 'Failed to fetch workout plan.');
             }
         })
-        .catch(error => console.error('Error fetching workout plan:', error));
+        .catch(error => {
+            console.error('Error fetching workout plan:', error);
+            document.getElementById('weeklyWorkoutPlan').innerHTML = error.message;
+        });
+}
+
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
 }
 
 function displayWorkoutPlan(weeklyWorkoutPlan) {

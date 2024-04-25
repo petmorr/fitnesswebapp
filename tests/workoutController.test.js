@@ -63,34 +63,33 @@ describe('WorkoutController', () => {
     });
 
     describe('generateAndUpdateWorkoutPlan', () => {
-        // Not working as expected
-        // it('should generate and update workout plan successfully', async () => {
-        //     const mockUser = {
-        //         _id: '123',
-        //         fitnessGoal: 'strength',
-        //         fitnessLevel: 'intermediate',
-        //         workoutDays: ['Monday', 'Wednesday'],
-        //         save: jest.fn().mockResolvedValue({})
-        //     };
-        //     User.findById.mockResolvedValue(mockUser);
+        it('should generate and update workout plan successfully', async () => {
+            const mockUser = {
+                _id: '123',
+                fitnessGoal: 'strength',
+                fitnessLevel: 'intermediate',
+                workoutDays: ['Monday', 'Wednesday'],
+                save: jest.fn().mockResolvedValue({})
+            };
+            User.findById.mockResolvedValue(mockUser);
 
-        //     const req = { session: { userId: '123' } };
-        //     const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+            const req = { session: { userId: '123' } };
+            const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
 
-        //     axios.get.mockResolvedValue({
-        //         data: [{ name: 'Pushups', muscle: 'chest', sets: 3, reps: 10, weight: 20 }]
-        //     });
+            axios.get.mockResolvedValue({
+                data: [{ name: 'Pushups', muscle: 'chest', sets: 3, reps: 10, weight: 20 }]
+            });
 
-        //     await workoutController.generateAndUpdateWorkoutPlan(req, res);
+            await workoutController.generateAndUpdateWorkoutPlan(req, res);
 
-        //     expect(User.findById).toHaveBeenCalledWith('123');
-        //     expect(axios.get).toHaveBeenCalled();
-        //     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-        //         success: true,
-        //         message: 'Workout plan generated and updated successfully',
-        //         weeklyWorkoutPlan: expect.any(Array)
-        //     }));
-        // });
+            expect(User.findById).toHaveBeenCalledWith('123');
+            expect(axios.get).toHaveBeenCalled();
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                success: true,
+                message: 'Workout plan generated and updated successfully',
+                weeklyWorkoutPlan: expect.any(Array)
+            }));
+        });
 
         it('should handle user not found error', async () => {
             User.findById.mockResolvedValue(null);

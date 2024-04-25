@@ -8,7 +8,7 @@ const path = require('path');
 const mustacheExpress = require('mustache-express');
 const userRoutes = require('./routes/userRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
-const logger = require('./config/logger'); // Assume a logger configuration exists
+const logger = require('./utils/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
