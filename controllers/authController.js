@@ -67,38 +67,35 @@ exports.renderLoginPage = (req, res) => {
 // Handle user login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    // Validate email and password
-    if (!email || !password) {
-      logger.warn('Login attempt without email or password');
-      return res.status(400).json({ success: false, errorMessage: 'Email and password are required.' });
-    }
+      // Validate email and password
+      if (!email || !password) {
+        return res.status(400).json({ success: false, errorMessage: 'Email and password are required.' })
+      }
 
-    // Find the user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      logger.warn('Invalid login credentials', { email });
-      return res.status(401).json({ success: false, errorMessage: 'Invalid email.' });
-    }
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ success: false, errorMessage: 'Invalid email.' });
+      }
 
-    // Compare the submitted password with the hashed password in the database
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      logger.warn('Invalid login credentials', { email });
-      return res.status(401).json({ success: false, errorMessage: 'Invalid password.' });
-    }
+      // Compare the submitted password with the hashed password in the database
+      const isMatch = await user.comparePassword(password);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, errorMessage: 'Invalid password.' });
+      }
 
-    // Set the session variables
-    req.session.userId = user._id;
-    req.isAuthenticated = true;
-
-    // Send a success response
-    logger.info('User logged in successfully', { email });
-    return res.json({ success: true, message: "Login successful" });
+      // Set the session variables
+      req.session.userId = user._id;
+      req.session.save(err => {
+        if (err) {
+          logger.error('Session save error', err);
+          return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+        }
+        res.json({ success: true, message: "Login successful" });
+      });
   } catch (error) {
-    logger.error('Login error', { error });
-    return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+      return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
 
