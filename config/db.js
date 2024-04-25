@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const logger = require('./logger'); // Assuming you have a logger utility
+const logger = require('../utils/logger');
 
 /**
  * Attempts to connect to MongoDB with retries on failure.
@@ -14,10 +14,7 @@ const connectDB = async (retryCount = 5) => {
   }
 
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(process.env.MONGO_URI, {});
     logger.info('MongoDB connected successfully');
     return mongoose; // Return mongoose to allow for chaining or direct use
   } catch (err) {
