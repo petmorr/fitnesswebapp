@@ -1,71 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{title}}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
-<div class="container">
-  <header>
-    <h2>{{title}}</h2>
-  </header>
-  <main>
-    <form id="registerForm" action="/api/register" method="POST">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
-
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" title="Password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number, and 1 special character">
-      
-      <label for="confirmPassword">Confirm Password:</label>
-      <input type="password" id="confirmPassword" name="confirmPassword" required>
-
-      <label for="age">Age:</label>
-      <input type="number" id="age" name="age" required min="16" max="100">
-
-      <label for="weight">Weight:</label>
-      <input type="number" id="weight" name="weight" required>
-      <select id="weightUnit" name="weightUnit">
-        <option value="kg">kg</option>
-        <option value="lbs">lbs</option>
-        <option value="stone">stone</option>
-      </select>
-
-      <label for="height">Height:</label>
-      <input type="number" id="height" name="height" required>
-      <select id="heightUnit" name="heightUnit">
-        <option value="cm">cm</option>
-        <option value="ftin">ft & in</option>
-      </select>
-
-      <select name="fitnessGoal" required>
-        <option value="">Select your fitness goal</option>
-        <option value="cardio">Cardio</option>
-        <option value="olympicWeightlifting">Olympic Weightlifting</option>
-        <option value="plyometrics">Plyometrics</option>
-        <option value="powerlifting">Powerlifting</option>
-        <option value="strength">Strength</option>
-        <option value="stretching">Stretching</option>
-        <option value="strongman">Strongman</option>
-      </select>
-
-      <select name="fitnessLevel" required>
-        <option value="">Select your fitness level</option>
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="expert">Expert</option>
-      </select>
-
-      <button type="submit">Register</button>
-    </form>
-    <p id="errorMessage" style="color: red;"></p>
-    <p>Already have an account? <a href="/login">Login here</a>.</p>
-  </main>
-  <footer>
-    <p>&copy; 2024 FitnessPal. All rights reserved.</p>
-  </footer>
-</div>
-<script src="/js/authForms.js"></script>
+    <div class="container">
+        <main>
+            <div class="registration-box">
+            <h2>{{title}}</h2>
+                <form id="registerForm" action="/api/register" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" title="Must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" id="age" name="age" required min="16" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight:</label>
+                        <input type="number" id="weight" name="weight" required>
+                        <select id="weightUnit" name="weightUnit">
+                            <option value="kg">kg</option>
+                            <option value="lbs">lbs</option>
+                            <option value="stone">stone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Height:</label>
+                        <input type="number" id="height" name="height" required>
+                        <select id="heightUnit" name="heightUnit">
+                            <option value="cm">cm</option>
+                            <option value="ftin">ft & in</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fitnessGoal">Fitness Goal:</label>
+                        <select name="fitnessGoal" required>
+                            <option value="">Select your fitness goal</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="olympicWeightlifting">Olympic Weightlifting</option>
+                            <option value="plyometrics">Plyometrics</option>
+                            <option value="powerlifting">Powerlifting</option>
+                            <option value="strength">Strength</option>
+                            <option value="stretching">Stretching</option>
+                            <option value="strongman">Strongman</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fitnessLevel">Fitness Level:</label>
+                        <select name="fitnessLevel" required>
+                            <option value="">Select your fitness level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-register">Register</button>
+                </form>
+                <p id="errorMessage" class="error-message"></p>
+                <p>Already have an account? <a href="/login">Login here</a>.</p>
+                <footer>
+                    <p>&copy; 2024 FitnessPal. All rights reserved.</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+    <script src="/js/authForms.js"></script>
 </body>
 </html>

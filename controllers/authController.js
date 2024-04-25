@@ -92,7 +92,7 @@ exports.login = async (req, res) => {
           logger.error('Session save error', err);
           return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
         }
-        res.json({ success: true, message: "Login successful" });
+        return res.json({ success: true, message: "Login successful" });
       });
   } catch (error) {
       return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
