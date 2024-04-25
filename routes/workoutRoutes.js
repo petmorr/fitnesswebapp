@@ -6,7 +6,8 @@ const authenticateToken = require('../middleware/authMiddleware');
 // Routes for Workout Page
 router.get('/workout-plan', authenticateToken, generateWorkoutPage);
 router.get('/api/workout-plan', authenticateToken, generateAndUpdateWorkoutPlan);
-// router.get('/api/workout-preview', authenticateToken, workoutPlanPreview);
+
+// Routes for saving user preferences and feedback on workouts
 router.post('/api/saveWorkoutDays', authenticateToken, saveWorkoutDays);
 router.post('/api/submitFeedback', authenticateToken, submitWorkoutFeedback);
 

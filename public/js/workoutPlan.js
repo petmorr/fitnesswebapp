@@ -1,35 +1,29 @@
+// Manages interactions on the workout plan page such as saving preferences and fetching workout plans
 document.addEventListener('DOMContentLoaded', () => {
-    const savePreferencesBtn = document.getElementById('savePreferencesBtn');
-    const generateWorkoutPlanBtn = document.getElementById('generateWorkoutPlanBtn');
-    const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
-
-    savePreferencesBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        const selectedDays = [...document.querySelectorAll('input[name="workoutDays"]:checked')].map(input => input.value);
-
-        fetch('/workout/api/saveWorkoutDays', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ workoutDays: selectedDays }),
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Directly show the generate workout plan button container
-                generateWorkoutPlanBtn.style.display = 'block';
-            } else {
-                console.error('Failed to save workout days.');
-            }
-        })
-        .catch(error => {
-            console.error('Error saving workout days:', error);
-        });
-    });
-
-    generateWorkoutPlanBtn.addEventListener('click', fetchWorkoutPlan);
+    document.getElementById('savePreferencesBtn').addEventListener('click', saveWorkoutPreferences);
+    document.getElementById('generateWorkoutPlanBtn').addEventListener('click', fetchWorkoutPlan);
 });
-  
+
+function saveWorkoutPreferences(event) {
+    event.preventDefault();
+    const selectedDays = [...document.querySelectorAll('input[name="workoutDays"]:checked')].map(input => input.value);
+    fetch('/workout/api/saveWorkoutDays', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workoutDays: selectedDays }),
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('generateWorkoutPlanBtn').style.display = 'block';
+        } else {
+            console.error('Failed to save workout days.');
+        }
+    })
+    .catch(error => console.error('Error saving workout days:', error));
+}
+
 function fetchWorkoutPlan() {
     fetch('/workout/api/workout-plan', { credentials: 'include' })
         .then(response => response.json())
@@ -45,31 +39,24 @@ function fetchWorkoutPlan() {
 
 function displayWorkoutPlan(weeklyWorkoutPlan) {
     const container = document.getElementById('weeklyWorkoutPlan');
-    container.innerHTML = ''; // Clear existing content
-
-    weeklyWorkoutPlan.forEach((dayPlan, dayIndex) => {
-        const dayDiv = document.createElement('div');
-        dayDiv.innerHTML = `<h3>${dayPlan.day}</h3>`;
-        const exercisesList = document.createElement('ul');
-
-        dayPlan.exercises.forEach((exercise, exerciseIndex) => {
-            exercisesList.innerHTML += `
-                <li>
-                    <span class="exercise-name">${exercise.name}</span>: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
-                    - Completed: <input type="checkbox" class="exercise-completed" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
-                    - Feedback: <select class="exercise-feedback" data-day-index="${dayIndex}" data-exercise-index="${exerciseIndex}">
-                        <option value="neutral">Neutral</option>
-                        <option value="positive">Positive</option>
-                        <option value="negative">Negative</option>
-                    </select>
-                </li>
-            `;
-        });
-        dayDiv.appendChild(exercisesList);
-        container.appendChild(dayDiv);
-    });
-
-    // Ensure event listeners are properly added after updating the list
+    container.innerHTML = weeklyWorkoutPlan.map(dayPlan => `
+        <div>
+            <h3>${dayPlan.day}</h3>
+            <ul>
+                ${dayPlan.exercises.map(exercise => `
+                    <li>
+                        ${exercise.name}: ${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight} kg
+                        <input type="checkbox" class="exercise-completed">
+                        <select class="exercise-feedback">
+                            <option value="neutral">Neutral</option>
+                            <option value="positive">Positive</option>
+                            <option value="negative">Negative</option>
+                        </select>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `).join('');
     addExerciseEventListeners();
 }
 
@@ -80,33 +67,15 @@ function addExerciseEventListeners() {
 }
 
 function handleExerciseCompletion(event) {
-    const completedCheckboxes = document.querySelectorAll('.exercise-completed');
-    const allCompleted = [...completedCheckboxes].every(checkbox => checkbox.checked);
-
+    const allCompleted = [...document.querySelectorAll('.exercise-completed')].every(checkbox => checkbox.checked);
     if (allCompleted) {
         submitFeedbackAutomatically();
     }
 }
 
 function submitFeedbackAutomatically() {
-    const feedbackData = [...document.querySelectorAll('.exercise-feedback')].map((select) => {
-        const exerciseContainer = select.closest('li');
-        const exerciseName = exerciseContainer.querySelector('.exercise-name').innerText; 
-        const checkbox = exerciseContainer.querySelector('.exercise-completed');
-        const dayIndex = checkbox.dataset.dayIndex;
-        const exerciseIndex = checkbox.dataset.exerciseIndex;
-
-        return {
-            dayIndex: dayIndex,
-            exerciseIndex: exerciseIndex,
-            name: exerciseName.trim(),
-            completed: checkbox.checked,
-            feedback: select.value
-        };
-    });
-
+    const feedbackData = collectFeedbackData();
     console.log('Submitting feedback:', JSON.stringify(feedbackData)); // Ensure this logs actual data
-
     fetch('/workout/api/submitFeedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -123,4 +92,16 @@ function submitFeedbackAutomatically() {
         fetchWorkoutPlan(); // Refresh the plan
     })
     .catch(error => console.error('Error submitting feedback:', error));
+}
+
+function collectFeedbackData() {
+    return [...document.querySelectorAll('.exercise-feedback')].map(select => {
+        const checkbox = select.previousElementSibling;
+        const exerciseName = select.parentElement.textContent.split(':')[0].trim();
+        return {
+            name: exerciseName,
+            completed: checkbox.checked,
+            feedback: select.value
+        };
+    });
 }
