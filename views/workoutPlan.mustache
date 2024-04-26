@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
-    <link rel="stylesheet" type="text/css" href="/css/workoutPlan.css"/>
+    <link rel="stylesheet" href="/css/workoutPlan.css">
 </head>
 <body>
-    <form id="workoutDaysForm">
-        <h3>Select your workout days:</h3>
-        <label><input type="checkbox" name="workoutDays" value="Monday"> Monday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Tuesday"> Tuesday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Wednesday"> Wednesday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Thursday"> Thursday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Friday"> Friday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Saturday"> Saturday</label><br>
-        <label><input type="checkbox" name="workoutDays" value="Sunday"> Sunday</label><br>
-        <button type="button" id="savePreferencesBtn">Save Preferences</button>
-    </form>
-    <button id="generateWorkoutPlanBtn" style="display:none;">Generate Workout Plan</button>
-    <div id="weeklyWorkoutPlan"></div>
-<script src="/js/workoutPlan.js" defer></script>
+    <header>
+        <h1>FitnessPal Workout Plan</h1>
+    </header>
+    <main>
+        {{#showWorkoutDaysForm}}
+        <section class="workout-days-form">
+            <h2>Select Your Workout Days</h2>
+            <form id="workoutDaysForm">
+                <label><input type="checkbox" name="workoutDays" value="Monday"> Monday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Tuesday"> Tuesday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Wednesday"> Wednesday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Thursday"> Thursday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Friday"> Friday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Saturday"> Saturday</label><br>
+                <label><input type="checkbox" name="workoutDays" value="Sunday"> Sunday</label><br>
+                <button type="button" id="savePreferencesBtn">Save Preferences</button>
+            </form>
+        </section>
+        {{/showWorkoutDaysForm}}
+        <section class="slideshow">
+            <h2>Weekly Workout Plan</h2>
+            <div class="slide-container" id="weeklyWorkoutPlan">
+                <!-- Workout plan will be dynamically inserted here -->
+            </div>
+        </section>
+        <section class="features">
+            <h2>Additional Options</h2>
+            <!-- Add windows/panels for additional options -->
+            <div class="feature-window">
+                <h3>Customize Workout Plan</h3>
+                <p>Adjust your workout plan according to your preferences</p>
+                <button class="view-details">Customize</button>
+            </div>
+            <!-- Add more feature windows as needed -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 FitnessPal. All rights reserved.</p>
+    </footer>
+    <script src="/js/workoutPlan.js" defer></script>
 </body>
 </html>

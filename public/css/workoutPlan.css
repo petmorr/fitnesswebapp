@@ -1,0 +1,32 @@
+/* CSS for the workout plan page */
+
+/* Style for workout days form */
+.workout-days-form {
+    margin-bottom: 20px;
+}
+
+.workout-days-form label {
+    display: block;
+}
+
+/* Style for workout plan slideshow */
+.slideshow {
+    margin-bottom: 20px;
+}
+
+.slide {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Style for additional options section */
+.features {
+    margin-bottom: 20px;
+}
+
+.feature-window {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
