@@ -125,12 +125,13 @@ describe('AuthController', () => {
       User.findOne.mockResolvedValue({
         email: 'user@example.com',
         password: 'hashedPassword',
+        password: 'hashedPassword',
         comparePassword: jest.fn().mockResolvedValue(true)
       });
 
       const loginResponse = await agent
         .post('/api/login')
-        .send({ email: 'user@example.com', password: 'password' });
+        .send({ email: 'user@example.com', password: 'password', confirmPassword: 'password' });
 
       expect(loginResponse.status).toBe(200);
     });
@@ -139,7 +140,7 @@ describe('AuthController', () => {
       User.findOne.mockResolvedValue(null);
       const response = await agent
         .post('/api/login')
-        .send({ email: 'unknown@example.com', password: 'password' });
+        .send({ email: 'unknown@example.com', password: 'password', confirmPassword: 'password' });
 
       expect(response.status).toBe(400);
       expect(response.body.errorMessage).toBe('Invalid email.');
@@ -152,7 +153,7 @@ describe('AuthController', () => {
       });
       const response = await agent
         .post('/api/login')
-        .send({ email: 'user@example.com', password: 'wrongpassword' });
+        .send({ email: 'user@example.com', password: 'wrongpassword', confirmPassword: 'wrongpassword'});
 
       expect(response.status).toBe(400);
       expect(response.body.errorMessage).toBe('Invalid password.');

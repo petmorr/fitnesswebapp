@@ -67,10 +67,10 @@ exports.renderLoginPage = (req, res) => {
 
 // Handle user login
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, confirmPassword } = req.body;
   try {
       // Validate email and password
-      if (!email || !password) {
+      if (!email || !password || !confirmPassword) {
         return res.status(400).json({ success: false, errorMessage: 'Email and password are required.' })
       }
 
@@ -78,6 +78,11 @@ exports.login = async (req, res) => {
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ success: false, errorMessage: 'Invalid email.' });
+      }
+
+      if (password !== confirmPassword) {
+        logger.warn('Password mismatch during registration', { email });
+        return res.status(400).json({ success: false, errorMessage: 'Passwords do not match.' });
       }
 
       // Compare the submitted password with the hashed password in the database
