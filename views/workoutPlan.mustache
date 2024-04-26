@@ -11,8 +11,7 @@
         <h1>FitnessPal Workout Plan</h1>
     </header>
     <main>
-        {{#showWorkoutDaysForm}}
-        <section class="workout-days-form">
+        <section class="workout-days-form" id="workoutDaysFormSection" style="display:none;">
             <h2>Select Your Workout Days</h2>
             <form id="workoutDaysForm">
                 <label><input type="checkbox" name="workoutDays" value="Monday"> Monday</label><br>
@@ -25,7 +24,6 @@
                 <button type="button" id="savePreferencesBtn">Save Preferences</button>
             </form>
         </section>
-        {{/showWorkoutDaysForm}}
         <section class="slideshow">
             <h2>Weekly Workout Plan</h2>
             <div class="slide-container" id="weeklyWorkoutPlan">
@@ -33,12 +31,12 @@
             </div>
         </section>
         <section class="features">
-            <h2>Additional Options</h2>
+            <h2>Want to change your workout schedule?</h2>
             <!-- Add windows/panels for additional options -->
             <div class="feature-window">
-                <h3>Customize Workout Plan</h3>
+                <h3>Customise Workout Plan</h3>
                 <p>Adjust your workout plan according to your preferences</p>
-                <button class="view-details">Customize</button>
+                <button class="view-details" id="customiseWorkoutBtn">Customise</button>
             </div>
             <!-- Add more feature windows as needed -->
         </section>

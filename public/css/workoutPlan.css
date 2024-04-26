@@ -30,3 +30,22 @@
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.card-item {
+    margin: 5px 0;
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-item:last-child {
+    border-bottom: none;
+}

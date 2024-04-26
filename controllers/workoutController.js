@@ -134,18 +134,28 @@ function generateBalancedWeeklyWorkoutPlan(exercises, workoutDays) {
     return Object.keys(plan).map(day => ({ day, exercises: plan[day] }));
 }
 
-// Saves specified workout days for a user
+// Saves specified workout days for a user and generates a new workout plan
 exports.saveWorkoutDays = async (req, res) => {
     const { userId } = req.session;
     const { workoutDays } = req.body;
 
     try {
+        // Update the user's workout days
         await User.findByIdAndUpdate(userId, { workoutDays });
         logger.info('Workout days saved successfully', { userId });
-        res.json({ success: true });
+
+        // Generate a new workout plan based on the updated days
+        const newWorkoutPlan = await this.generateAndUpdateWorkoutPlan(userId, workoutDays);
+        logger.info('New workout plan generated successfully', { userId });
+
+        // Save the new workout plan to the user's record in the database
+        await User.findByIdAndUpdate(userId, { weeklyWorkoutPlan: newWorkoutPlan });
+
+        // Return the new workout plan along with a success message
+        res.json({ success: true, workoutPlan: newWorkoutPlan });
     } catch (error) {
         logger.error('Error saving workout preferences', { userId, error });
-        res.status(500).json({ success: false, errorMessage: 'Failed to save workout preferences' });
+        res.status(500).json({ success: false, errorMessage: 'Failed to save workout preferences and generate plan' });
     }
 };
 
@@ -158,6 +168,11 @@ exports.generateAndUpdateWorkoutPlan = async (req, res) => {
         if (!user) {
             logger.warn('User not found', { userId });
             return res.status(404).json({ success: false, errorMessage: 'User not found' });
+        }
+
+        // Check if user already has a plan and if it's up-to-date
+        if (user.weeklyWorkoutPlan && user.weeklyWorkoutPlan.length > 0) {
+            return res.json({ success: true, weeklyWorkoutPlan: user.weeklyWorkoutPlan });
         }
 
         const exercises = await this.fetchExercisesFromAPI(user.fitnessGoal, user.fitnessLevel);
