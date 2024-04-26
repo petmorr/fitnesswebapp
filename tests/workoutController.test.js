@@ -41,7 +41,7 @@ describe('WorkoutController', () => {
             {
                 userId: '124',
                 workoutDays: [],
-                expected: { success: false, errorMessage: 'Failed to save workout preferences' },
+                expected: { success: false, errorMessage: 'Failed to save workout preferences and generate plan' },
                 setup: () => User.findByIdAndUpdate.mockRejectedValue(new Error('DB Error'))
             }
         ];

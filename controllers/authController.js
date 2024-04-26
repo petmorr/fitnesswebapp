@@ -16,9 +16,9 @@ exports.renderRegisterPage = (req, res) => {
 
 // Handle user registration
 exports.register = async (req, res) => {
+  logger.debug('Starting user registration');
+  const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoal } = req.body;
   try {
-    logger.debug('Starting user registration');
-    const { email, password, confirmPassword, age, weight, weightUnit, height, heightUnit, fitnessLevel, fitnessGoal } = req.body;
     let missingFields = ['email', 'password', 'confirmPassword', 'age', 'weight', 'height', 'fitnessGoal', 'fitnessLevel'].filter(field => !req.body[field]);
 
     if (missingFields.length > 0) {
@@ -53,6 +53,7 @@ exports.register = async (req, res) => {
     logger.info('User registered successfully', { email });
     return res.json({ success: true, message: "Registration successful" });
   } catch (error) {
+    console.log(error);
     logger.error('Registration failed', { error });
     return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
@@ -95,7 +96,8 @@ exports.login = async (req, res) => {
         return res.json({ success: true, message: "Login successful" });
       });
   } catch (error) {
-      return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
+    logger.error('Login failed', { error: error.toString() });
+    return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
 };
 
