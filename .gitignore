@@ -1,0 +1,15 @@
+# Ignore environment files
+.env
+
+# Dependency directories
+node_modules/
+
+# Log files
+*.log
+
+# Directory for built executables
+/dist
+
+# Operating system generated files
+.DS_Store
+Thumbs.db
