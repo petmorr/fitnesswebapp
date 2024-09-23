@@ -9,6 +9,7 @@ const mustacheExpress = require('mustache-express');
 const userRoutes = require('./routes/userRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
 const logger = require('./utils/logger');
+const lusca = require('lusca');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,6 +44,9 @@ const PORT = process.env.PORT || 3000;
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
       }
     }));
+
+    // Apply CSRF protection middleware
+    app.use(lusca.csrf());
 
     // Serve static files from the 'public' directory
     const publicDirectoryPath = path.join(__dirname, 'public');
