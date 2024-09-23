@@ -75,7 +75,7 @@ exports.login = async (req, res) => {
       }
 
       // Find the user by email
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: { $eq: email } });
       if (!user) {
         return res.status(400).json({ success: false, errorMessage: 'Invalid email.' });
       }
