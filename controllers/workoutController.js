@@ -145,7 +145,7 @@ exports.saveWorkoutDays = async (req, res) => {
     }
 
     try {
-        await User.findByIdAndUpdate(userId, { workoutDays }, { runValidators: true });
+        await User.findByIdAndUpdate(userId, { workoutDays: { $eq: workoutDays } }, { runValidators: true });
         
         // Using axios to make a GET request to the route
         const response = await axios.get('http://localhost:3000/api/workout-plan', {
