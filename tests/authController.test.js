@@ -15,7 +15,7 @@ function createTestApp() {
     secret: 'testsecret',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: true }
   }));
   app.use(routes);
   return app;
