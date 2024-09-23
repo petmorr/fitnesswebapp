@@ -31,7 +31,7 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, errorMessage: 'Passwords do not match.' });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: { $eq: email } });
     if (existingUser) {
       logger.warn('Attempt to register with an existing email', { email });
       return res.status(400).json({ success: false, errorMessage: 'User already exists.' });
