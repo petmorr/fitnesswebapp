@@ -12,7 +12,7 @@ const limiter = rateLimit({
 
 // Routes for Workout Page
 router.get('/workout-plan', authenticateToken, generateWorkoutPage);
-router.get('/api/workout-plan', authenticateToken, generateAndUpdateWorkoutPlan);
+router.get('/api/workout-plan', authenticateToken, limiter, generateAndUpdateWorkoutPlan);
 
 // Routes for saving user preferences and feedback on workouts
 router.post('/api/saveWorkoutDays', authenticateToken, limiter, saveWorkoutDays);
