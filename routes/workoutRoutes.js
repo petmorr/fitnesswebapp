@@ -15,7 +15,7 @@ router.get('/workout-plan', authenticateToken, generateWorkoutPage);
 router.get('/api/workout-plan', authenticateToken, generateAndUpdateWorkoutPlan);
 
 // Routes for saving user preferences and feedback on workouts
-router.post('/api/saveWorkoutDays', authenticateToken, saveWorkoutDays);
+router.post('/api/saveWorkoutDays', authenticateToken, limiter, saveWorkoutDays);
 router.post('/api/submitFeedback', authenticateToken, limiter, submitWorkoutFeedback);
 
 module.exports = router;
