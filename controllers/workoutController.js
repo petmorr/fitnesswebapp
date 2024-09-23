@@ -139,6 +139,11 @@ exports.saveWorkoutDays = async (req, res) => {
     const { userId } = req.session;
     const { workoutDays } = req.body;
 
+    // Validate workoutDays
+    if (!Array.isArray(workoutDays) || !workoutDays.every(day => typeof day === 'string')) {
+        return res.status(400).json({ success: false, errorMessage: 'Invalid workoutDays format' });
+    }
+
     try {
         await User.findByIdAndUpdate(userId, { workoutDays }, { runValidators: true });
         
