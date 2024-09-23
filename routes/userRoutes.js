@@ -16,7 +16,13 @@ router.get('/', renderLandingPage);
 
 // Routes for registration
 router.get('/register', renderRegisterPage); // Render the registration page
-router.post('/api/register', register); // Handle form submission
+// Rate limiter for registration route: maximum of 5 requests per minute
+const registerLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 5, // limit each IP to 5 requests per windowMs
+    message: "Too many registration attempts from this IP, please try again after a minute"
+});
+router.post('/api/register', registerLimiter, register); // Handle form submission with rate limiting
 
 // Routes for login
 router.get('/login', renderLoginPage); // Render the login page
