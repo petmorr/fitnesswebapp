@@ -145,19 +145,9 @@ exports.saveWorkoutDays = async (req, res) => {
     }
 
     try {
-        await User.findByIdAndUpdate(userId, { workoutDays: { $eq: workoutDays } }, { runValidators: true });
+        await User.findByIdAndUpdate(userId, { workoutDays }, { runValidators: true });
+        res.json({ success: true });
         
-        // Using axios to make a GET request to the route
-        const response = await axios.get('http://localhost:3000/api/workout-plan', {
-            headers: { Authorization: `Bearer ${yourTokenHere}` }
-        });
-        
-        if (response.data.success) {
-            await User.findByIdAndUpdate(userId, { weeklyWorkoutPlan: response.data.weeklyWorkoutPlan }, { runValidators: true });
-            res.json({ success: true, weeklyWorkoutPlan: response.data.weeklyWorkoutPlan });
-        } else {
-            res.status(404).json(response.data);
-        }
     } catch (error) {
         if (!res.headersSent) {
             res.status(500).json({ success: false, errorMessage: 'Failed to save workout preferences and generate plan' });
@@ -188,7 +178,6 @@ exports.generateAndUpdateWorkoutPlan = async (req, res) => {
 
         return res.json({ success: true, message: 'Workout plan generated and updated successfully', weeklyWorkoutPlan: user.weeklyWorkoutPlan });
     } catch (error) {
-        console.log
         logger.error('Error in workout plan generation', { userId, error });
         res.status(500).json({ success: false, errorMessage: 'Failed to generate or update workout plan' });
     }
