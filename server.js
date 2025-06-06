@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3000;
     app.use(session({
       secret: process.env.JWT_SECRET,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI,
       }),

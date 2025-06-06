@@ -53,7 +53,6 @@ exports.register = async (req, res) => {
     logger.info('User registered successfully', { email });
     return res.json({ success: true, message: "Registration successful" });
   } catch (error) {
-    console.log(error);
     logger.error('Registration failed', { error });
     return res.status(500).json({ success: false, errorMessage: 'Internal server error' });
   }
